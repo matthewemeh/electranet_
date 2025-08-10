@@ -13,7 +13,7 @@ type AdminTokenStatus = 'REVOKED' | 'ACTIVE';
 
 type MinifiedElection = Omit<Election, Exclude<keyof Election, 'name' | 'delimitationCode'>>;
 
-type MinifiedParty = Omit<Party, Exclude<keyof Party, 'shortName' | 'longName' | 'logoUrl'>>;
+type MinifiedParty = Omit<Party, 'motto' | 'createdAt' | 'updatedAt'>;
 
 type MinifiedContestant = Omit<
   Contestant,

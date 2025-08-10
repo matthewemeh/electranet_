@@ -35,6 +35,7 @@ const Navbar = () => {
     USERS,
     TOKENS,
     DASHBOARD,
+    CONTESTANTS,
     AUTH: { LOGIN, REGISTER_USER },
   } = PATHS;
 
@@ -56,6 +57,12 @@ const Navbar = () => {
       url: TOKENS,
       urlRegex: new RegExp(`^${TOKENS}`),
       roleAccess: RoleWeight.SUPER_ADMIN,
+    },
+    {
+      text: 'Contestants',
+      url: CONTESTANTS.FETCH,
+      urlRegex: new RegExp(`^${CONTESTANTS.FETCH}`),
+      roleAccess: RoleWeight.ADMIN,
     },
     { text: 'Logs', url: LOGS, urlRegex: new RegExp(`^${LOGS}`), roleAccess: RoleWeight.ADMIN },
   ];

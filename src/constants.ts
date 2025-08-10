@@ -1,5 +1,7 @@
 export default {
   USER_IMAGE_KEY: 'image',
+  PARTY_IMAGE_KEY: 'partyImage',
+  CONTESTANT_IMAGE_KEY: 'contestantImage',
   GENDERS: { MALE: 'MALE', FEMALE: 'FEMALE' },
   ADMIN_TOKEN_STATUSES: { REVOKED: 'REVOKED', ACTIVE: 'ACTIVE' },
   ROLES: { USER: 'USER', ADMIN: 'ADMIN', SUPER_ADMIN: 'SUPER_ADMIN' },

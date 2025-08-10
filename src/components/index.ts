@@ -37,7 +37,9 @@ export { default as RegisterUserPassword } from './auth/register-user/RegisterPa
 export { default as LogTab } from './tabs/LogTab';
 export { default as UserTab } from './tabs/UserTab';
 export { default as TokenTab } from './tabs/TokenTab';
+export { default as ContestantTab } from './tabs/ContestantTab';
 
 // filters
 export { default as LogFilters } from './filters/LogFilters';
 export { default as UserFilters } from './filters/UserFilters';
+export { default as ContestantFilters } from './filters/ContestantFilters';

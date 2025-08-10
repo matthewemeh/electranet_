@@ -137,6 +137,14 @@ input[type='checkbox'] {
   @apply text-base font-medium;
 }
 
+.party {
+  @apply flex gap-4 items-center;
+}
+
+.party__img {
+  @apply rounded-full w-8 h-8;
+}
+
 /* ================ FORM STYLING ================= */
 
 .form-header {

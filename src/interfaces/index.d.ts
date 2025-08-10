@@ -7,8 +7,8 @@ interface MongoProps {
 
 interface ListItem {
   data?: any;
-  name: string;
   value: string;
+  name: React.ReactNode;
 }
 
 interface Tokens {

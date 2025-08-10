@@ -11,4 +11,9 @@ export const PATHS = {
   LOGS: '/logs',
   USERS: '/users',
   TOKENS: '/tokens',
+  CONTESTANTS: {
+    FETCH: '/contestants',
+    ADD: '/contestants/add',
+    EDIT: '/contestants/edit',
+  },
 } as const;
