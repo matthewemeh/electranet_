@@ -1,0 +1,13 @@
+export default {
+  USER_IMAGE_KEY: 'image',
+  GENDERS: { MALE: 'MALE', FEMALE: 'FEMALE' },
+  ADMIN_TOKEN_STATUSES: { REVOKED: 'REVOKED', ACTIVE: 'ACTIVE' },
+  ROLES: { USER: 'USER', ADMIN: 'ADMIN', SUPER_ADMIN: 'SUPER_ADMIN' },
+  FILE_SIZE: {
+    IMAGE: 512_000, // 500 KB
+  },
+  SUPPORTED_FORMATS: '.png, .jpeg, .jpg',
+  REGEX_RULES: {
+    PASSWORD: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,20}$/,
+  },
+};
