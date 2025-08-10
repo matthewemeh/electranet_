@@ -45,10 +45,6 @@ interface ForgotVerifyOtpResponse extends BaseResponse {
   };
 }
 
-interface AddContestantResponse extends BaseResponse {
-  data: Contestant;
-}
-
 interface ResultResponse extends BaseResponse {
   data: {
     createdAt: string;

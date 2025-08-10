@@ -13,7 +13,7 @@ const partyApi = createApi({
   reducerPath: 'partyApi',
   refetchOnReconnect: true,
   endpoints: builder => ({
-    addParty: builder.mutation<Party, AddPartyPayload>({
+    addParty: builder.mutation<PaginatedResponse<Party>, AddPartyPayload>({
       query: body => {
         const formData = new FormData();
         Object.entries(body).forEach(updateFormData(formData));

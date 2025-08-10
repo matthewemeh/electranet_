@@ -1,12 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { Add } from '@mui/icons-material';
+import { useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Add, Refresh, VisibilityOff } from '@mui/icons-material';
 import { IoIosArrowRoundUp, IoIosArrowRoundDown } from 'react-icons/io';
 import {
   Fab,
   Paper,
   Table,
-  Button,
   Tooltip,
   TableRow,
   TableBody,
@@ -19,37 +18,33 @@ import {
 
 import { isEmptyObject } from '../../utils';
 import { PATHS } from '../../routes/PathConstants';
-import { useGetContestantsQuery } from '../../services/apis/contestantApi';
+import { useGetPartiesQuery } from '../../services/apis/partyApi';
 import {
   useHandleReduxQueryError,
   useHandleReduxQuerySuccess,
 } from '../../hooks/useHandleReduxQuery';
 import {
+  PartyTab,
   EmptyList,
   InfoButton,
   AlertDialog,
   LoadingPaper,
-  FilterButton,
-  ContestantTab,
-  ContestantFilters,
   TablePaginationActions,
 } from '../../components';
 
 export interface Column extends TableCellProps {
   label: string;
+  id: keyof Party;
   maxWidth?: number;
   minWidth?: number;
-  id: keyof Contestant | 'fullName';
   format?: (value: number) => string;
 }
 
-const Contestants = () => {
+const Parties = () => {
   const columns: readonly Column[] = [
-    { id: 'profileImageUrl', label: '', maxWidth: 50 },
-    { id: 'fullName', label: 'Full Name', minWidth: 170 },
-    { id: 'gender', label: 'Gender', minWidth: 10 },
-    { id: 'stateOfOrigin', label: 'State of Origin', minWidth: 10 },
-    { id: 'party', label: 'Party', minWidth: 10 },
+    { id: 'logoUrl', label: '', maxWidth: 50 },
+    { id: 'shortName', label: 'Party Alias', minWidth: 10 },
+    { id: 'longName', label: 'Party Name', minWidth: 170 },
   ];
 
   const navigate = useNavigate();
@@ -67,10 +62,7 @@ const Contestants = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sortBy, setSortBy] = useState({});
   const [alertOpen, setAlertOpen] = useState(false);
-  const [isFiltersOn, setIsFiltersOn] = useState(false);
-  const [filterAlertOpen, setFilterAlertOpen] = useState(false);
-  const [filters, setFilters] = useState<GetContestantsPayload['params']>({});
-  const [selectedContestant, setSelectedContestant] = useState<Contestant | null>(null);
+  const [selectedParty, setSelectedParty] = useState<Party | null>(null);
   const {
     refetch,
     data: getData,
@@ -78,12 +70,11 @@ const Contestants = () => {
     isError: isGetError,
     isLoading: isGetLoading,
     isSuccess: isGetSuccess,
-  } = useGetContestantsQuery({
+  } = useGetPartiesQuery({
     params: {
       page,
       limit: rowsPerPage,
       sortBy: JSON.stringify(isEmptyObject(sortBy) ? { lastName: 1 } : sortBy),
-      ...(isFiltersOn ? filters : {}),
       ...queryParams,
     },
   });
@@ -100,53 +91,38 @@ const Contestants = () => {
     setPage(newPage + 1);
   };
 
-  const handleInfoClick = (contestant: Contestant) => {
-    setSelectedContestant(contestant);
+  const handleInfoClick = (party: Party) => {
+    setSelectedParty(party);
     setAlertOpen(true);
   };
 
-  const handleFilterClick = () => setFilterAlertOpen(true);
+  const paginatedData = useMemo(() => {
+    return getData as PaginatedResponse<Party> | undefined;
+  }, [getData]);
 
   const dialogContent: React.ReactNode = useMemo(() => {
-    if (!selectedContestant) return <></>;
+    if (!selectedParty) return <></>;
 
-    const { gender, lastName, firstName, middleName, isDeleted, party, stateOfOrigin } =
-      selectedContestant;
+    const { logoUrl, longName, shortName, motto } = selectedParty;
 
     return (
       <div className='grid grid-cols-[40%_60%] gap-2'>
-        <p className='card-info__tag'>Name</p>
-        <p className='card-info__text capitalize'>
-          {lastName} {firstName} {middleName}
-        </p>
+        <p className='card-info__tag'>Party Name</p>
+        <p className='card-info__text capitalize'>{longName}</p>
 
-        {isDeleted && (
-          <p className='card-info__tag'>
-            <VisibilityOff />
-            Currently not visible to voters
-          </p>
-        )}
+        <p className='card-info__tag'>Party Alias</p>
+        <p className='card-info__text capitalize'>{shortName}</p>
 
-        <p className='card-info__tag'>Party</p>
+        <p className='card-info__tag'>Party Motto</p>
+        <p className='card-info__text capitalize'>{motto ?? 'Unavailable'}</p>
+
+        <p className='card-info__tag'>Party Logo</p>
         <div className='card-info__text capitalize'>
-          {party ? (
-            <div className='party'>
-              <img src={party.logoUrl} alt={party.longName} className='party__img !rounded' />
-              <span>{party.longName}</span>
-            </div>
-          ) : (
-            'Unavailable'
-          )}
+          <img src={logoUrl} alt={longName} className='party__img !rounded' />
         </div>
-
-        <p className='card-info__tag'>Gender</p>
-        <p className='card-info__text capitalize'>{gender.toLowerCase()}</p>
-
-        <p className='card-info__tag'>State of Origin</p>
-        <p className='card-info__text capitalize'>{stateOfOrigin || 'Unavailable'}</p>
       </div>
     );
-  }, [selectedContestant]);
+  }, [selectedParty]);
 
   const handleSortClick = (id: Column['id'], isSortDisabled: boolean) => {
     return (e: React.MouseEvent<HTMLTableCellElement>) => {
@@ -173,39 +149,16 @@ const Contestants = () => {
       if (newSort === 0) {
         setSortBy(prevSortBy => {
           const newSortBy = { ...prevSortBy };
-          if (id === 'fullName') {
-            // @ts-ignore
-            delete newSortBy['lastName'];
-          } else {
-            // @ts-ignore
-            delete newSortBy[id];
-          }
+          // @ts-ignore
+          delete newSortBy[id];
 
           return newSortBy;
         });
       } else {
-        setSortBy(prevSortBy => {
-          if (id === 'fullName') {
-            return { ...prevSortBy, lastName: newSort };
-          }
-
-          return { ...prevSortBy, [id]: newSort };
-        });
+        setSortBy(prevSortBy => ({ ...prevSortBy, [id]: newSort }));
       }
     };
   };
-
-  useEffect(() => {
-    setPage(1);
-    if (isEmptyObject(filters as object)) {
-      setIsFiltersOn(false);
-    } else {
-      setIsFiltersOn(true);
-
-      // clear any existing search params
-      if (searchParams.size > 0) setSearchParams({});
-    }
-  }, [filters]);
 
   useHandleReduxQuerySuccess({
     response: getData,
@@ -216,41 +169,27 @@ const Contestants = () => {
 
   if (isGetLoading) {
     return <LoadingPaper />;
-  } else if (!getData || getData.data.totalDocs === 0) {
+  } else if (!paginatedData || paginatedData.data.totalDocs === 0) {
     return (
-      <EmptyList
-        url={PATHS.CONTESTANTS.ADD}
-        addText='Add new contestant'
-        emptyText='No contestants found'
-        addComponent={
-          isFiltersOn && (
-            <div className='flex items-center gap-2'>
-              Empty filtered results?
-              <Button variant='contained' startIcon={<Refresh />} onClick={() => setFilters({})}>
-                Reset Filters
-              </Button>
-            </div>
-          )
-        }
-      />
+      <EmptyList url={PATHS.PARTIES.ADD} addText='Add new party' emptyText='No parties found' />
     );
   }
 
   return (
     <Paper className='table-wrapper'>
       <TableContainer className='rounded-3xl'>
-        <Table stickyHeader aria-label='contestants' className='relative'>
+        <Table stickyHeader aria-label='parties' className='relative'>
           <TableHead>
             <TableRow role='row'>
               {columns.map(({ id, label, align, minWidth, maxWidth }) => {
-                const isSortDisabled = id === 'profileImageUrl' || id === 'party' || isGetLoading;
+                const isSortDisabled = id === 'logoUrl' || isGetLoading;
 
                 return (
                   <TableCell
+                    role='columnheader'
                     key={id}
                     data-sort='0'
                     align={align}
-                    role='columnheader'
                     style={{ minWidth, maxWidth }}
                     className='!font-semibold !text-base'
                     onClick={handleSortClick(id, isSortDisabled)}
@@ -267,40 +206,31 @@ const Contestants = () => {
               })}
               <TableCell role='columnheader' style={{ minWidth: 10 }} />
               <TableCell role='columnheader' style={{ minWidth: 10 }} />
-              <TableCell role='columnheader' style={{ minWidth: 10 }} />
             </TableRow>
           </TableHead>
 
           <TableBody>
-            {getData.data.docs.map(contestant => (
-              <ContestantTab
+            {paginatedData.data.docs.map(party => (
+              <PartyTab
+                party={party}
+                key={party._id}
                 columns={columns}
-                key={contestant._id}
-                contestant={contestant}
-                onInfoClick={contestant => handleInfoClick(contestant)}
+                onInfoClick={party => handleInfoClick(party)}
               />
             ))}
           </TableBody>
         </Table>
       </TableContainer>
 
-      <InfoButton title="Contestants' information takes about 5 minutes to reflect any changes you make" />
-
-      <FilterButton isFiltersOn={isFiltersOn} onClick={handleFilterClick} />
-
-      <ContestantFilters
-        open={filterAlertOpen}
-        setFilters={setFilters}
-        setOpen={setFilterAlertOpen}
-      />
+      <InfoButton title="Parties' information takes about 5 minutes to reflect any changes you make" />
 
       <TablePagination
         component='div'
         rowsPerPage={rowsPerPage}
-        page={getData.data.page - 1}
-        count={getData.data.totalDocs}
         onPageChange={handlePageChange}
         rowsPerPageOptions={[10, 25, 50]}
+        page={paginatedData.data.page - 1}
+        count={paginatedData.data.totalDocs}
         ActionsComponent={TablePaginationActions}
         onRowsPerPageChange={handleRowsPerPageChange}
       />
@@ -310,18 +240,18 @@ const Contestants = () => {
         open={alertOpen}
         setOpen={setAlertOpen}
         affirmativeText='Close'
-        dialogTitle='Contestant Details'
+        dialogTitle='Party Details'
         dialogContent={dialogContent}
       />
 
       <Tooltip
-        title='Add more contestants'
-        className={`add-fab ${getData.data.totalDocs === 0 && '!hidden'}`}
+        title='Add more parties'
+        className={`add-fab ${paginatedData.data.totalDocs === 0 && '!hidden'}`}
       >
         <Fab
           color='primary'
-          aria-label='add more contestants'
-          onClick={() => navigate(PATHS.CONTESTANTS.ADD)}
+          aria-label='add more parties'
+          onClick={() => navigate(PATHS.PARTIES.ADD)}
         >
           <Add />
         </Fab>
@@ -330,4 +260,4 @@ const Contestants = () => {
   );
 };
 
-export default Contestants;
+export default Parties;

@@ -162,6 +162,7 @@ const ContestantAdd = () => {
         />
 
         <TextField
+          required
           type='text'
           id='stateOfOrigin'
           name='stateOfOrigin'

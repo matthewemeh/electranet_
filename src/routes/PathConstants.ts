@@ -16,4 +16,9 @@ export const PATHS = {
     ADD: '/contestants/add',
     EDIT: '/contestants/edit',
   },
+  PARTIES: {
+    FETCH: '/parties',
+    ADD: '/parties/add',
+    EDIT: '/parties/edit',
+  },
 } as const;

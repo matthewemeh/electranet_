@@ -98,7 +98,7 @@ const ContestantUpdate = () => {
       return showAlert({ msg: 'You have not made any changes', duration: 5000 });
     }
 
-    updateContestant(payload as UpdateContestantPayload);
+    updateContestant(payload);
   };
 
   useHandleReduxQueryError({

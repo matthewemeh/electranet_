@@ -13,7 +13,7 @@ const contestantApi = createApi({
   reducerPath: 'contestantApi',
   refetchOnReconnect: true,
   endpoints: builder => ({
-    addContestant: builder.mutation<AddContestantResponse, AddContestantPayload>({
+    addContestant: builder.mutation<PaginatedResponse<Contestant>, AddContestantPayload>({
       query: body => {
         const formData = new FormData();
         Object.entries(body).forEach(updateFormData(formData));
