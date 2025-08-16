@@ -67,16 +67,6 @@ export const secondsToMMSS = (seconds: number): string => {
   return `${minutes.toString().padStart(2, '0')}:${secondsLeft.toString().padStart(2, '0')}`;
 };
 
-export const convertToUTC = (localDateTimeStr: string): string => {
-  // Create a Date object using the local time
-  const localDate = new Date(localDateTimeStr);
-
-  // Convert to ISO string and slice to remove milliseconds and 'Z'
-  const utcString = localDate.toISOString().split('.')[0];
-
-  return utcString;
-};
-
 export const updateFormData = (formData: FormData) => {
   return ([field, value]: [string, any]) => {
     const isPrimitive = typeof value === 'string' || value instanceof Blob;
@@ -86,4 +76,18 @@ export const updateFormData = (formData: FormData) => {
 
 export const isEmptyObject = (obj: object): boolean => {
   return Object.keys(obj).length === 0 && obj.constructor === Object;
+};
+
+export const generateTimeSlots = (spacingMinutes: number): string[] => {
+  const slots: string[] = [];
+  const maxMinutes = 23 * 60 + 59; // 23:59 in minutes
+
+  for (let minutes = 0; minutes <= maxMinutes; minutes += spacingMinutes) {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    const timeStr = `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
+    slots.push(timeStr);
+  }
+
+  return slots;
 };

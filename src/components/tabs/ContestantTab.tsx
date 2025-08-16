@@ -73,7 +73,6 @@ const ContestantTab: React.FC<Props> = ({ contestant, columns, onInfoClick }) =>
         } else if (id === 'profileImageUrl') {
           value = <Avatar className='avatar-image' src={contestant.profileImageUrl} />;
         } else {
-          // @ts-ignore
           value = contestant[id] || 'Unavailable';
         }
 

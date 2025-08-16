@@ -35,6 +35,7 @@ const Navbar = () => {
     USERS,
     TOKENS,
     PARTIES,
+    ELECTIONS,
     DASHBOARD,
     CONTESTANTS,
     AUTH: { LOGIN, REGISTER_USER },
@@ -58,6 +59,12 @@ const Navbar = () => {
       url: TOKENS,
       urlRegex: new RegExp(`^${TOKENS}`),
       roleAccess: RoleWeight.SUPER_ADMIN,
+    },
+    {
+      text: 'Elections',
+      url: ELECTIONS.FETCH,
+      urlRegex: new RegExp(`^${ELECTIONS.FETCH}`),
+      roleAccess: RoleWeight.ADMIN,
     },
     {
       text: 'Contestants',

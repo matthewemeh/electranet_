@@ -30,7 +30,6 @@ const PartyTab: React.FC<Props> = ({ party, columns, onInfoClick }) => {
         } else if (id === 'shortName' || id === 'longName') {
           value = <p className='uppercase'>{party[id]}</p>;
         } else {
-          // @ts-ignore
           value = party[id] || 'Unavailable';
         }
 
