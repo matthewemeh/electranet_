@@ -1,8 +1,8 @@
 import moment from 'moment';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tooltip, TableRow, TableCell, IconButton } from '@mui/material';
-import { DriveFileRenameOutline, DeleteOutline } from '@mui/icons-material';
+import { DriveFileRenameOutline, DeleteOutline, People } from '@mui/icons-material';
 
 import AlertDialog from '../AlertDialog';
 import { PATHS } from '../../routes/PathConstants';
@@ -21,6 +21,7 @@ interface Props {
 const ElectionTab: React.FC<Props> = ({ election, columns }) => {
   const navigate = useNavigate();
   const [alertOpen, setAlertOpen] = useState(false);
+  const hasElectionStarted = useMemo(() => Date.now() > new Date(election.startTime).getTime(), []);
 
   const [
     deleteElection,
@@ -37,6 +38,11 @@ const ElectionTab: React.FC<Props> = ({ election, columns }) => {
   const navigateEditPage = () => {
     localStorage.setItem('electionToUpdate', JSON.stringify(election));
     navigate(PATHS.ELECTIONS.EDIT);
+  };
+
+  const navigateEditContestantsPage = () => {
+    sessionStorage.setItem('election', JSON.stringify(election));
+    navigate(PATHS.ELECTIONS.CONTESTANTS);
   };
 
   const handleDelete = () => setAlertOpen(true);
@@ -81,9 +87,23 @@ const ElectionTab: React.FC<Props> = ({ election, columns }) => {
       </TableCell>
 
       <TableCell role='cell' style={{ minWidth: 10 }}>
+        <Tooltip title='View Election contestants'>
+          <IconButton
+            aria-label='edit'
+            className='cursor-pointer'
+            onClick={navigateEditContestantsPage}
+          >
+            <People />
+          </IconButton>
+        </Tooltip>
+      </TableCell>
+
+      <TableCell role='cell' style={{ minWidth: 10 }}>
         <Tooltip
           title={
-            isDeleteSuccess
+            hasElectionStarted
+              ? 'Cannot deleted commenced election'
+              : isDeleteSuccess
               ? 'Election deleted'
               : isDeleteLoading
               ? 'Deleting Election'
@@ -95,7 +115,7 @@ const ElectionTab: React.FC<Props> = ({ election, columns }) => {
               aria-label='delete'
               onClick={handleDelete}
               className='disabled:!cursor-not-allowed'
-              disabled={isDeleteLoading || isDeleteSuccess}
+              disabled={hasElectionStarted || isDeleteLoading || isDeleteSuccess}
             >
               <DeleteOutline />
             </IconButton>

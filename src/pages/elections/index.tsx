@@ -206,6 +206,7 @@ const Elections = () => {
               })}
               <TableCell role='columnheader' style={{ minWidth: 10 }} />
               <TableCell role='columnheader' style={{ minWidth: 10 }} />
+              <TableCell role='columnheader' style={{ minWidth: 10 }} />
             </TableRow>
           </TableHead>
 

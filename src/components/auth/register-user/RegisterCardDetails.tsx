@@ -1,47 +1,32 @@
+import moment from 'moment';
 import { Formik } from 'formik';
-import { useContext } from 'react';
 import { string, object } from 'yup';
 import { Link } from 'react-router-dom';
 import { Button, TextField } from '@mui/material';
+import { useContext, useMemo, useState } from 'react';
 
-import constants from '../../../constants';
+import DatePicker from '../../inputs/DatePicker';
 import { PATHS } from '../../../routes/PathConstants';
-import DropdownInput from '../../inputs/DropdownInput';
 import { RegisterContext } from '../../../pages/auth/register/RegisterUser';
 
 const RegisterCardDetails = () => {
   const { LOGIN } = PATHS.AUTH;
-  const { GENDERS } = constants;
+  const todayDate = useMemo(() => new Date(), []);
+  const [birthDate, setBirthDate] = useState<Date>();
+  const [birthDatePickerVisible, setBirthDatePickerVisible] = useState(false);
   const { registerPayload, navigatePasswordSection } = useContext(RegisterContext)!;
 
   return (
     <Formik
       initialValues={registerPayload.current}
       validationSchema={object({
-        vin: string().trim().email('Please enter your vin').required('Please enter your email'),
-        email: string()
-          .trim()
-          .email('Please enter a valid email')
-          .required('Please enter your email'),
-        lastName: string()
-          .trim()
-          .min(2, 'Last name must be at least 2 characters')
-          .max(64, 'Last name must be at most 64 characters')
-          .required('Please enter your last name'),
-        firstName: string()
-          .trim()
-          .min(2, 'Other names must be at least 2 characters')
-          .max(64, 'Other names must be at most 64 characters')
-          .required('Please enter your first name'),
-        gender: string()
-          .oneOf(Object.values(GENDERS), 'Please select a valid gender')
-          .required('Please select your gender'),
-        middleName: string()
-          .trim()
-          .min(2, 'Other names must be at least 2 characters')
-          .max(64, 'Other names must be at most 64 characters'),
+        vin: string().trim().required('Please enter your VIN'),
+        address: string().trim().required('Please enter your address'),
+        occupation: string().trim().required('Please enter your occupation'),
+        delimitationCode: string().trim().required('Please enter your delimitation code'),
       })}
       onSubmit={(values, { setSubmitting }) => {
+        values.dateOfBirth = moment(birthDate).format('DD-MM-YYYY');
         registerPayload.current = Object.assign(registerPayload.current, values);
         setSubmitting(false);
         navigatePasswordSection();
@@ -51,72 +36,75 @@ const RegisterCardDetails = () => {
         <form className='form' onSubmit={handleSubmit}>
           <TextField
             required
-            id='email'
-            type='email'
-            name='email'
-            label='Email'
+            autoFocus
+            id='vin'
+            type='vin'
+            name='vin'
+            label='VIN'
             onBlur={handleBlur}
             onChange={handleChange}
-            autoComplete='email'
-            value={values.email}
-            helperText={touched.email && errors.email}
-            error={touched.email && Boolean(errors.email)}
+            value={values.vin}
+            error={touched.vin && !!errors.vin}
+            helperText={touched.vin && errors.vin}
             className='form-field'
           />
 
           <TextField
             required
             type='text'
-            id='lastName'
-            name='lastName'
-            label='Last name'
+            id='address'
+            name='address'
+            label='Address'
             onBlur={handleBlur}
             onChange={handleChange}
-            autoComplete='family-name'
-            value={values.lastName}
-            helperText={touched.lastName && errors.lastName}
-            error={touched.lastName && Boolean(errors.lastName)}
+            value={values.address}
+            error={touched.address && !!errors.address}
+            helperText={touched.address && errors.address}
             className='form-field'
           />
 
           <TextField
             required
             type='text'
-            id='firstName'
-            name='firstName'
-            label='First name'
+            id='occupation'
+            name='occupation'
+            label='Occupation'
             onBlur={handleBlur}
             onChange={handleChange}
-            autoComplete='given-name'
-            value={values.firstName}
-            helperText={touched.firstName && errors.firstName}
-            error={touched.firstName && Boolean(errors.firstName)}
+            value={values.occupation}
+            error={touched.occupation && !!errors.occupation}
+            helperText={touched.occupation && errors.occupation}
           />
 
           <TextField
+            required
             type='text'
-            id='middleName'
-            name='middleName'
-            label='Middle name'
-            onBlur={handleBlur}
-            onChange={handleChange}
-            autoComplete='additional-name'
-            value={values.middleName}
-            helperText={touched.middleName && errors.middleName}
-            error={touched.middleName && Boolean(errors.middleName)}
+            id='dateOfBirth'
+            name='dateOfBirth'
+            autoComplete='off'
+            label='Date of Birth'
+            onClick={() => setBirthDatePickerVisible(true)}
+            value={birthDate ? moment(birthDate).format('DD-MM-YYYY') : ''}
+          />
+          <DatePicker
+            maxDate={todayDate}
+            selectedDate={birthDate}
+            setSelectedDate={setBirthDate}
+            visible={birthDatePickerVisible}
+            setVisible={setBirthDatePickerVisible}
           />
 
-          <DropdownInput
+          <TextField
             required
-            id='gender'
-            name='gender'
-            label='Gender'
+            type='text'
+            id='delimitationCode'
+            name='delimitationCode'
+            label='Delimitation Code'
             onBlur={handleBlur}
             onChange={handleChange}
-            value={values.gender}
-            helperText={touched.gender && errors.gender}
-            error={touched.gender && Boolean(errors.gender)}
-            menuItems={Object.entries(GENDERS).map(([key, value]) => ({ value, name: key }))}
+            value={values.delimitationCode}
+            error={touched.delimitationCode && !!errors.delimitationCode}
+            helperText={touched.delimitationCode && errors.delimitationCode}
           />
 
           <Button type='submit' variant='contained' loading={isSubmitting} className='!mt-3'>

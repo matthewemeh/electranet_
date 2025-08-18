@@ -16,8 +16,8 @@ import {
 
 import constants from '../../../constants';
 import { PATHS } from '../../../routes/PathConstants';
-import { RegisterContext } from '../../../pages/auth/register/RegisterAdmin';
 import { useRegisterAdminMutation } from '../../../services/apis/authApi';
+import { RegisterContext } from '../../../pages/auth/register/RegisterAdmin';
 import {
   useHandleReduxQueryError,
   useHandleReduxQuerySuccess,
@@ -102,7 +102,7 @@ const RegisterPassword = () => {
             required
             variant='outlined'
             className='form-field !mb-5'
-            error={touched.password && Boolean(errors.password)}
+            error={touched.password && !!errors.password}
           >
             <InputLabel htmlFor='password'>Password</InputLabel>
             <OutlinedInput
@@ -133,7 +133,7 @@ const RegisterPassword = () => {
             required
             variant='outlined'
             className='form-field'
-            error={touched.confirmPassword && Boolean(errors.confirmPassword)}
+            error={touched.confirmPassword && !!errors.confirmPassword}
           >
             <InputLabel htmlFor='confirmPassword'>Confirm Password</InputLabel>
             <OutlinedInput

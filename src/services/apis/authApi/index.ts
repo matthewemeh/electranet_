@@ -72,6 +72,7 @@ export const {
   useLoginMutation,
   useLogoutMutation,
   useLazySendOtpQuery,
+  useRegisterUserMutation,
   useRegisterAdminMutation,
   useResetPasswordMutation,
   useLazyRefreshTokensQuery,

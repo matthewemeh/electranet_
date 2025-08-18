@@ -6,8 +6,8 @@ import { useContext, useEffect, useState } from 'react';
 import OtpInput from '../../inputs/OtpInput';
 import { PATHS } from '../../../routes/PathConstants';
 import { secondsToMMSS, showAlert } from '../../../utils';
-import { RegisterContext } from '../../../pages/auth/register/RegisterAdmin';
 import { updateUser } from '../../../services/apis/authApi/store';
+import { RegisterContext } from '../../../pages/auth/register/RegisterUser';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useRootStorage';
 import {
   useHandleReduxQueryError,

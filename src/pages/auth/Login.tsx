@@ -56,15 +56,15 @@ const Login = () => {
               onChange={handleChange}
               autoComplete='username'
               value={values.email}
+              error={touched.email && !!errors.email}
               helperText={touched.email && errors.email}
-              error={touched.email && Boolean(errors.email)}
               className='form-field'
             />
 
             <FormControl
               variant='outlined'
               className='form-field'
-              error={touched.password && Boolean(errors.password)}
+              error={touched.password && !!errors.password}
             >
               <InputLabel htmlFor='password'>Password</InputLabel>
               <OutlinedInput

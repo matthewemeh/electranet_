@@ -83,8 +83,8 @@ const ForgotPassword = () => {
                   onChange={handleChange}
                   autoComplete='username'
                   value={values.email}
+                  error={touched.email && !!errors.email}
                   helperText={touched.email && errors.email}
-                  error={touched.email && Boolean(errors.email)}
                   className='form-field'
                 />
 

@@ -74,3 +74,7 @@ interface AddVoteTokenResponse extends BaseResponse {
 interface GetPartiesResponse extends BaseResponse {
   data: MinifiedParty[] | PaginatedResponse<Party>;
 }
+
+interface GetElectionContestantsResponse extends BaseResponse {
+  data: Contestant[];
+}

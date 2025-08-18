@@ -58,8 +58,8 @@ const RegisterDetails = () => {
             onChange={handleChange}
             autoComplete='email'
             value={values.email}
+            error={touched.email && !!errors.email}
             helperText={touched.email && errors.email}
-            error={touched.email && Boolean(errors.email)}
             className='form-field'
           />
 
@@ -73,8 +73,8 @@ const RegisterDetails = () => {
             onChange={handleChange}
             autoComplete='family-name'
             value={values.lastName}
+            error={touched.lastName && !!errors.lastName}
             helperText={touched.lastName && errors.lastName}
-            error={touched.lastName && Boolean(errors.lastName)}
             className='form-field'
           />
 
@@ -88,8 +88,8 @@ const RegisterDetails = () => {
             onChange={handleChange}
             autoComplete='given-name'
             value={values.firstName}
+            error={touched.firstName && !!errors.firstName}
             helperText={touched.firstName && errors.firstName}
-            error={touched.firstName && Boolean(errors.firstName)}
           />
 
           <TextField
@@ -101,8 +101,8 @@ const RegisterDetails = () => {
             onChange={handleChange}
             autoComplete='additional-name'
             value={values.middleName}
+            error={touched.middleName && !!errors.middleName}
             helperText={touched.middleName && errors.middleName}
-            error={touched.middleName && Boolean(errors.middleName)}
           />
 
           <DropdownInput
@@ -113,8 +113,8 @@ const RegisterDetails = () => {
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.gender}
+            error={touched.gender && !!errors.gender}
             helperText={touched.gender && errors.gender}
-            error={touched.gender && Boolean(errors.gender)}
             menuItems={Object.entries(GENDERS).map(([key, value]) => ({ value, name: key }))}
           />
 

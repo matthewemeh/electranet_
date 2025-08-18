@@ -101,7 +101,7 @@ const ResetPassword = () => {
               required
               variant='outlined'
               className='form-field'
-              error={touched.password && Boolean(errors.password)}
+              error={touched.password && !!errors.password}
             >
               <InputLabel htmlFor='password'>Password</InputLabel>
               <OutlinedInput
@@ -132,7 +132,7 @@ const ResetPassword = () => {
               required
               variant='outlined'
               className='form-field'
-              error={touched.confirmPassword && Boolean(errors.confirmPassword)}
+              error={touched.confirmPassword && !!errors.confirmPassword}
             >
               <InputLabel htmlFor='confirmPassword'>Confirm Password</InputLabel>
               <OutlinedInput

@@ -10,6 +10,7 @@ import {
   StepTracker,
   RegisterUserOTP,
   RegisterUserDetails,
+  RegisterCardDetails,
   RegisterUserPassword,
 } from '../../../components';
 
@@ -82,7 +83,7 @@ const Register = () => {
     {
       title: 'Your Card details',
       subtitle: 'Please provide your card information',
-      form: <RegisterUserDetails />,
+      form: <RegisterCardDetails />,
     },
     {
       title: 'Create your password',

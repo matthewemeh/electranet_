@@ -13,11 +13,10 @@ const RegisterDetails = () => {
   const { ROLES } = constants;
   const { LOGIN } = PATHS.AUTH;
   const { registerPayload, navigatePasswordSection } = useContext(RegisterContext)!;
-  const { email, lastName, firstName, role, middleName } = registerPayload.current;
 
   return (
     <Formik
-      initialValues={{ email, lastName, firstName, role, middleName }}
+      initialValues={registerPayload.current}
       validationSchema={object({
         email: string()
           .trim()
@@ -53,8 +52,8 @@ const RegisterDetails = () => {
             onChange={handleChange}
             autoComplete='family-name'
             value={values.lastName}
+            error={touched.lastName && !!errors.lastName}
             helperText={touched.lastName && errors.lastName}
-            error={touched.lastName && Boolean(errors.lastName)}
             className='form-field'
           />
 
@@ -68,8 +67,8 @@ const RegisterDetails = () => {
             onChange={handleChange}
             autoComplete='given-name'
             value={values.firstName}
+            error={touched.firstName && !!errors.firstName}
             helperText={touched.firstName && errors.firstName}
-            error={touched.firstName && Boolean(errors.firstName)}
           />
 
           <TextField
@@ -81,8 +80,8 @@ const RegisterDetails = () => {
             onChange={handleChange}
             autoComplete='given-name'
             value={values.middleName}
+            error={touched.middleName && !!errors.middleName}
             helperText={touched.middleName && errors.middleName}
-            error={touched.middleName && Boolean(errors.middleName)}
           />
 
           <TextField
@@ -95,8 +94,8 @@ const RegisterDetails = () => {
             onChange={handleChange}
             autoComplete='email'
             value={values.email}
+            error={touched.email && !!errors.email}
             helperText={touched.email && errors.email}
-            error={touched.email && Boolean(errors.email)}
             className='form-field'
           />
 
@@ -107,10 +106,9 @@ const RegisterDetails = () => {
             onBlur={handleBlur}
             onChange={handleChange}
             value={values.role}
-            defaultValue={role}
             label='Role'
+            error={touched.role && !!errors.role}
             helperText={touched.role && errors.role}
-            error={touched.role && Boolean(errors.role)}
             menuItems={Object.entries(ROLES)
               .filter(([_, value]) => value !== 'USER')
               .map(([key, value]) => ({

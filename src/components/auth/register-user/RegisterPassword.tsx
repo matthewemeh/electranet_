@@ -16,8 +16,8 @@ import {
 
 import constants from '../../../constants';
 import { PATHS } from '../../../routes/PathConstants';
-import { useRegisterAdminMutation } from '../../../services/apis/authApi';
-import { RegisterContext } from '../../../pages/auth/register/RegisterAdmin';
+import { useRegisterUserMutation } from '../../../services/apis/authApi';
+import { RegisterContext } from '../../../pages/auth/register/RegisterUser';
 import {
   useHandleReduxQueryError,
   useHandleReduxQuerySuccess,
@@ -34,8 +34,7 @@ const RegisterPassword = () => {
   const { registerPayload, navigateOtpSection } = useContext(RegisterContext)!;
   const handleClickShowConfirmPassword = () => setShowConfirmPassword(show => !show);
   const { email, password } = registerPayload.current;
-  const [registerAdmin, { data, error, isError, isLoading, isSuccess }] =
-    useRegisterAdminMutation();
+  const [registerUser, { data, error, isError, isLoading, isSuccess }] = useRegisterUserMutation();
 
   useHandleReduxQueryError({
     error,
@@ -81,7 +80,7 @@ const RegisterPassword = () => {
         registerPayload.current = Object.assign(registerPayload.current, {
           password: values.password,
         });
-        registerAdmin(registerPayload.current);
+        registerUser(registerPayload.current);
       }}
     >
       {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
@@ -98,7 +97,7 @@ const RegisterPassword = () => {
             required
             variant='outlined'
             className='form-field !mb-5'
-            error={touched.password && Boolean(errors.password)}
+            error={touched.password && !!errors.password}
           >
             <InputLabel htmlFor='password'>Password</InputLabel>
             <OutlinedInput
@@ -129,7 +128,7 @@ const RegisterPassword = () => {
             required
             variant='outlined'
             className='form-field'
-            error={touched.confirmPassword && Boolean(errors.confirmPassword)}
+            error={touched.confirmPassword && !!errors.confirmPassword}
           >
             <InputLabel htmlFor='confirmPassword'>Confirm Password</InputLabel>
             <OutlinedInput

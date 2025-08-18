@@ -32,6 +32,7 @@ export { default as RegisterAdminPassword } from './auth/register-admin/Register
 export { default as RegisterUserOTP } from './auth/register-user/RegisterOTP';
 export { default as RegisterUserDetails } from './auth/register-user/RegisterDetails';
 export { default as RegisterUserPassword } from './auth/register-user/RegisterPassword';
+export { default as RegisterCardDetails } from './auth/register-user/RegisterCardDetails';
 
 // tabs
 export { default as LogTab } from './tabs/LogTab';

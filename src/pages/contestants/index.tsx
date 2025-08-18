@@ -120,13 +120,6 @@ const Contestants = () => {
           {lastName} {firstName} {middleName}
         </p>
 
-        {isDeleted && (
-          <p className='card-info__tag'>
-            <VisibilityOff />
-            Currently not visible to voters
-          </p>
-        )}
-
         <p className='card-info__tag'>Party</p>
         <div className='card-info__text capitalize'>
           {party ? (
@@ -144,6 +137,13 @@ const Contestants = () => {
 
         <p className='card-info__tag'>State of Origin</p>
         <p className='card-info__text capitalize'>{stateOfOrigin || 'Unavailable'}</p>
+
+        {isDeleted && (
+          <p className='card-info__tag flex gap-2 col-start-1 col-end-3'>
+            <VisibilityOff />
+            Currently not visible to voters
+          </p>
+        )}
       </div>
     );
   }, [selectedContestant]);
