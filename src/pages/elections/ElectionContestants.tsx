@@ -1,14 +1,12 @@
 import moment from 'moment';
-import { Add, Refresh } from '@mui/icons-material';
+import { Refresh } from '@mui/icons-material';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { IoIosArrowRoundUp, IoIosArrowRoundDown } from 'react-icons/io';
 import {
-  Fab,
   Paper,
   Table,
   Button,
-  Tooltip,
   TableRow,
   TableBody,
   TableCell,
@@ -263,17 +261,18 @@ const Contestants = () => {
             </TableHead>
 
             <TableBody>
-              {getContestantsData.data.docs.map(contestant => (
-                <ContestantTab
-                  columns={columns}
-                  key={contestant._id}
-                  isElectionContestant
-                  contestant={contestant}
-                  isAdded={getElectionContestantsData?.data.some(
-                    ({ _id }) => _id === contestant._id
-                  )}
-                />
-              ))}
+              {getElectionContestantsData &&
+                getContestantsData.data.docs.map(contestant => (
+                  <ContestantTab
+                    columns={columns}
+                    key={contestant._id}
+                    isElectionContestant
+                    contestant={contestant}
+                    isAdded={getElectionContestantsData.data.some(
+                      ({ _id }) => _id === contestant._id
+                    )}
+                  />
+                ))}
             </TableBody>
           </Table>
         </TableContainer>
@@ -298,19 +297,6 @@ const Contestants = () => {
           ActionsComponent={TablePaginationActions}
           onRowsPerPageChange={handleRowsPerPageChange}
         />
-
-        <Tooltip
-          title='Add more contestants'
-          className={`add-fab ${getContestantsData.data.totalDocs === 0 && '!hidden'}`}
-        >
-          <Fab
-            color='primary'
-            aria-label='add more contestants'
-            onClick={() => navigate(PATHS.CONTESTANTS.ADD)}
-          >
-            <Add />
-          </Fab>
-        </Tooltip>
       </Paper>
     </div>
   );
