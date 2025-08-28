@@ -18,10 +18,7 @@ import {
 
 import { isEmptyObject } from '../../utils';
 import { PATHS } from '../../routes/PathConstants';
-import {
-  useHandleReduxQueryError,
-  useHandleReduxQuerySuccess,
-} from '../../hooks/useHandleReduxQuery';
+import { useHandleReduxQueryError } from '../../hooks/useHandleReduxQuery';
 import {
   useGetContestantsQuery,
   useGetElectionContestantsQuery,
@@ -80,13 +77,12 @@ const Contestants = () => {
     refetch: refetchContestants,
     isError: isGetContestantsError,
     isLoading: isGetContestantsLoading,
-    isSuccess: isGetContestantsSuccess,
   } = useGetContestantsQuery({
     params: {
       page,
       limit: rowsPerPage,
       sortBy: JSON.stringify(isEmptyObject(sortBy) ? { lastName: 1 } : sortBy),
-      ...(isFiltersOn ? filters : {}),
+      ...filters,
       ...queryParams,
     },
   });
@@ -95,7 +91,6 @@ const Contestants = () => {
     error: getElectionContestantsError,
     refetch: refetchElectionContestants,
     isError: isGetElectionContestantsError,
-    isSuccess: isGetElectionContestantsSuccess,
   } = useGetElectionContestantsQuery(election._id);
 
   const handleRowsPerPageChange = (
@@ -176,22 +171,12 @@ const Contestants = () => {
     if (!election) navigate(-1);
   }, []);
 
-  useHandleReduxQuerySuccess({
-    showSuccessMessage: false,
-    response: getContestantsData,
-    isSuccess: isGetContestantsSuccess,
-  });
   useHandleReduxQueryError({
     isError: isGetContestantsError,
     error: getContestantsError,
     refetch: refetchContestants,
   });
 
-  useHandleReduxQuerySuccess({
-    showSuccessMessage: false,
-    response: getElectionContestantsData,
-    isSuccess: isGetElectionContestantsSuccess,
-  });
   useHandleReduxQueryError({
     isError: isGetElectionContestantsError,
     error: getElectionContestantsError,

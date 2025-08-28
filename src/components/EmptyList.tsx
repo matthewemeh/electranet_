@@ -20,7 +20,7 @@ const EmptyList: React.FC<EmptyListProps> = ({
   const navigate = useNavigate();
 
   return (
-    <div className='w-full h-[calc(100vh-100px)] flex flex-col items-center justify-center gap-5'>
+    <div className='w-full h-[calc(100dvh-100px)] flex flex-col items-center justify-center gap-5'>
       {emptyIcon}
       <p className='text-xl font-medium'>{emptyText}</p>
       {addComponent || (

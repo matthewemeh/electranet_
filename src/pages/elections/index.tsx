@@ -20,17 +20,14 @@ import {
 import { isEmptyObject } from '../../utils';
 import { PATHS } from '../../routes/PathConstants';
 import { useGetElectionsQuery } from '../../services/apis/electionApi';
-import {
-  useHandleReduxQueryError,
-  useHandleReduxQuerySuccess,
-} from '../../hooks/useHandleReduxQuery';
+import { useHandleReduxQueryError } from '../../hooks/useHandleReduxQuery';
 import {
   EmptyList,
   InfoButton,
   ElectionTab,
   LoadingPaper,
   FilterButton,
-  ContestantFilters,
+  ElectionFilters,
   TablePaginationActions,
 } from '../../components';
 
@@ -73,13 +70,12 @@ const Elections = () => {
     error: getError,
     isError: isGetError,
     isLoading: isGetLoading,
-    isSuccess: isGetSuccess,
   } = useGetElectionsQuery({
     params: {
       page,
       limit: rowsPerPage,
-      sortBy: JSON.stringify(isEmptyObject(sortBy) ? { lastName: 1 } : sortBy),
-      ...(isFiltersOn ? filters : {}),
+      sortBy: JSON.stringify(isEmptyObject(sortBy) ? { createdAt: -1 } : sortBy),
+      ...filters,
       ...queryParams,
     },
   });
@@ -146,11 +142,6 @@ const Elections = () => {
     }
   }, [filters]);
 
-  useHandleReduxQuerySuccess({
-    response: getData,
-    isSuccess: isGetSuccess,
-    showSuccessMessage: false,
-  });
   useHandleReduxQueryError({ isError: isGetError, error: getError, refetch });
 
   if (isGetLoading) {
@@ -178,7 +169,7 @@ const Elections = () => {
   return (
     <Paper className='table-wrapper'>
       <TableContainer className='rounded-3xl'>
-        <Table stickyHeader aria-label='contestants' className='relative'>
+        <Table stickyHeader aria-label='elections' className='relative'>
           <TableHead>
             <TableRow role='row'>
               {columns.map(({ id, label, align, minWidth, maxWidth }) => {
@@ -222,7 +213,7 @@ const Elections = () => {
 
       <FilterButton isFiltersOn={isFiltersOn} onClick={handleFilterClick} />
 
-      <ContestantFilters
+      <ElectionFilters
         open={filterAlertOpen}
         setFilters={setFilters}
         setOpen={setFilterAlertOpen}

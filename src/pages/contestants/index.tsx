@@ -20,10 +20,7 @@ import {
 import { isEmptyObject } from '../../utils';
 import { PATHS } from '../../routes/PathConstants';
 import { useGetContestantsQuery } from '../../services/apis/contestantApi';
-import {
-  useHandleReduxQueryError,
-  useHandleReduxQuerySuccess,
-} from '../../hooks/useHandleReduxQuery';
+import { useHandleReduxQueryError } from '../../hooks/useHandleReduxQuery';
 import {
   EmptyList,
   InfoButton,
@@ -77,13 +74,12 @@ const Contestants = () => {
     error: getError,
     isError: isGetError,
     isLoading: isGetLoading,
-    isSuccess: isGetSuccess,
   } = useGetContestantsQuery({
     params: {
       page,
       limit: rowsPerPage,
       sortBy: JSON.stringify(isEmptyObject(sortBy) ? { lastName: 1 } : sortBy),
-      ...(isFiltersOn ? filters : {}),
+      ...filters,
       ...queryParams,
     },
   });
@@ -207,11 +203,6 @@ const Contestants = () => {
     }
   }, [filters]);
 
-  useHandleReduxQuerySuccess({
-    response: getData,
-    isSuccess: isGetSuccess,
-    showSuccessMessage: false,
-  });
   useHandleReduxQueryError({ isError: isGetError, error: getError, refetch });
 
   if (isGetLoading) {
@@ -310,8 +301,8 @@ const Contestants = () => {
         open={alertOpen}
         setOpen={setAlertOpen}
         affirmativeText='Close'
-        dialogTitle='Contestant Details'
         dialogContent={dialogContent}
+        dialogTitle='Contestant Details'
       />
 
       <Tooltip

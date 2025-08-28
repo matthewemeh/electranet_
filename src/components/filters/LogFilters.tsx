@@ -53,7 +53,7 @@ const LogFilters: React.FC<Props> = ({ setFilters, open, setOpen }) => {
             visible={fromDatePickerVisible}
             setVisible={setFromDatePickerVisible}
             onDateChange={date =>
-              setNewFilters(prev => ({ ...prev, fromDate: date.toISOString() }))
+              setNewFilters(prev => ({ ...prev, startTime: date.toISOString() }))
             }
           />
 
@@ -72,7 +72,7 @@ const LogFilters: React.FC<Props> = ({ setFilters, open, setOpen }) => {
             setSelectedDate={setToDate}
             visible={toDatePickerVisible}
             setVisible={setToDatePickerVisible}
-            onDateChange={date => setNewFilters(prev => ({ ...prev, toDate: date.toISOString() }))}
+            onDateChange={date => setNewFilters(prev => ({ ...prev, endTime: date.toISOString() }))}
           />
         </form>
       }

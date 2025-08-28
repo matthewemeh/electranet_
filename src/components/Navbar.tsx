@@ -17,11 +17,16 @@ enum RoleWeight {
   SUPER_ADMIN = 2,
 }
 
+/**
+ * Only 1 or none of `allowedRoles` and `restrictedRoles` is allowed to be present in a `NavLink` object.
+ * However, if both are present then `restrictedRoles` is given priority over `allowedRoles`
+ */
 interface NavLink {
   url: string;
   text: string;
   urlRegex: RegExp;
-  roleAccess: RoleWeight;
+  allowedRoles?: RoleWeight | RoleWeight[];
+  restrictedRoles?: RoleWeight | RoleWeight[];
 }
 
 const Navbar = () => {
@@ -46,43 +51,55 @@ const Navbar = () => {
       text: 'Dashboard',
       url: DASHBOARD,
       urlRegex: new RegExp(`^${DASHBOARD}$`),
-      roleAccess: RoleWeight.ADMIN,
     },
     {
       text: 'Users',
       url: USERS,
       urlRegex: new RegExp(`^${USERS}`),
-      roleAccess: RoleWeight.SUPER_ADMIN,
+      allowedRoles: RoleWeight.SUPER_ADMIN,
     },
     {
       text: 'Tokens',
       url: TOKENS,
       urlRegex: new RegExp(`^${TOKENS}`),
-      roleAccess: RoleWeight.SUPER_ADMIN,
+      allowedRoles: RoleWeight.SUPER_ADMIN,
     },
     {
-      text: 'Elections',
+      text: role === 'USER' ? 'My Elections' : 'Elections',
       url: ELECTIONS.FETCH,
       urlRegex: new RegExp(`^${ELECTIONS.FETCH}`),
-      roleAccess: RoleWeight.ADMIN,
     },
     {
       text: 'Contestants',
       url: CONTESTANTS.FETCH,
       urlRegex: new RegExp(`^${CONTESTANTS.FETCH}`),
-      roleAccess: RoleWeight.ADMIN,
+      restrictedRoles: RoleWeight.USER,
     },
     {
       text: 'Parties',
       url: PARTIES.FETCH,
       urlRegex: new RegExp(`^${PARTIES.FETCH}`),
-      roleAccess: RoleWeight.ADMIN,
+      restrictedRoles: RoleWeight.USER,
     },
-    { text: 'Logs', url: LOGS, urlRegex: new RegExp(`^${LOGS}`), roleAccess: RoleWeight.ADMIN },
+    { text: 'Logs', url: LOGS, urlRegex: new RegExp(`^${LOGS}`), restrictedRoles: RoleWeight.USER },
   ];
 
+  const navLinkFilter = ({ allowedRoles, restrictedRoles }: NavLink) => {
+    if (restrictedRoles !== undefined) {
+      return Array.isArray(restrictedRoles)
+        ? !restrictedRoles.includes(RoleWeight[role])
+        : restrictedRoles !== RoleWeight[role];
+    } else if (allowedRoles !== undefined) {
+      return Array.isArray(allowedRoles)
+        ? allowedRoles.includes(RoleWeight[role])
+        : allowedRoles === RoleWeight[role];
+    }
+
+    return true;
+  };
+
   const filteredNavLinks = useMemo(() => {
-    return navLinks.filter(({ roleAccess }) => RoleWeight[role] >= roleAccess);
+    return navLinks.filter(navLinkFilter);
   }, [navLinks]);
 
   const navigate = useNavigate();
@@ -125,7 +142,7 @@ const Navbar = () => {
       </Link>
 
       <div
-        className={`nav-links flex gap-5 bg-white top-16 max-sm:w-screen max-sm:h-[calc(100vh-64px)] max-sm:fixed max-sm:flex-col max-sm:overflow-y-auto max-sm:p-4 transition-[inset] duration-500 ${
+        className={`nav-links flex gap-5 bg-white top-16 max-sm:w-screen max-sm:h-[calc(100dvh-64px)] max-sm:fixed max-sm:flex-col max-sm:overflow-y-auto max-sm:p-4 transition-[inset] duration-500 ${
           menuOpened ? 'right-0' : 'right-full'
         }`}
       >

@@ -43,7 +43,6 @@ const ContestantTab: React.FC<Props> = ({
     () => JSON.parse(sessionStorage.getItem('election') ?? '{}'),
     []
   );
-  const hasElectionStarted = useMemo(() => Date.now() > new Date(election.startTime).getTime(), []);
 
   const [
     updateContestant,
@@ -170,7 +169,7 @@ const ContestantTab: React.FC<Props> = ({
           <TableCell role='cell' style={{ minWidth: 10 }}>
             <Tooltip
               title={
-                hasElectionStarted
+                election.hasStarted
                   ? 'Cannot remove contestant from commenced election'
                   : `${isRemoveLoading ? 'Removing' : 'Remove'} Contestant from ${election.name}`
               }
@@ -179,8 +178,7 @@ const ContestantTab: React.FC<Props> = ({
                 <IconButton
                   aria-label='remove'
                   onClick={handleRemoveContestant}
-                  className='disabled:!cursor-not-allowed'
-                  disabled={hasElectionStarted || isRemoveLoading}
+                  disabled={election.hasStarted || isRemoveLoading}
                 >
                   <PersonRemove />
                 </IconButton>
@@ -191,7 +189,7 @@ const ContestantTab: React.FC<Props> = ({
           <TableCell role='cell' style={{ minWidth: 10 }}>
             <Tooltip
               title={
-                hasElectionStarted
+                election.hasStarted
                   ? 'Cannot add contestant to commenced election'
                   : `${isAddLoading ? 'Adding' : 'Add'} Contestant to ${election.name}`
               }
@@ -200,8 +198,7 @@ const ContestantTab: React.FC<Props> = ({
                 <IconButton
                   aria-label='add'
                   onClick={handleAddContestant}
-                  className='disabled:!cursor-not-allowed'
-                  disabled={hasElectionStarted || isAddLoading}
+                  disabled={election.hasStarted || isAddLoading}
                 >
                   <PersonAdd />
                 </IconButton>
@@ -235,7 +232,6 @@ const ContestantTab: React.FC<Props> = ({
                 <IconButton
                   aria-label='delete'
                   disabled={isUpdateLoading}
-                  className='disabled:!cursor-not-allowed'
                   onClick={contestant.isDeleted ? handleRestore : handleDelete}
                 >
                   {contestant.isDeleted ? <SettingsBackupRestore /> : <DeleteOutline />}

@@ -3,25 +3,20 @@ import { Outlet, useNavigate } from 'react-router-dom';
 
 import { PATHS } from '../routes/PathConstants';
 import { Navbar, Loading } from '../components';
-import { logout } from '../services/apis/authApi/store';
+import { useAppSelector } from '../hooks/useRootStorage';
 import { Stage as UserStage } from '../pages/auth/register/RegisterUser';
-import { useAppSelector, useAppDispatch } from '../hooks/useRootStorage';
 import { Stage as AdminStage } from '../pages/auth/register/RegisterAdmin';
 
 const MainLayout = () => {
-  const { LOGIN, REGISTER_ADMIN, REGISTER_USER } = PATHS.AUTH;
+  const { REGISTER_ADMIN, REGISTER_USER } = PATHS.AUTH;
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const {
     isAuthenticated,
     currentUser: { emailVerified, role },
   } = useAppSelector(state => state.authStore);
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      dispatch(logout());
-      navigate(LOGIN);
-    } else if (!emailVerified) {
+    if (isAuthenticated && !emailVerified) {
       if (role === 'USER') {
         navigate({ pathname: REGISTER_USER, search: `?stage=${UserStage.OTP}` });
       } else {

@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tooltip, TableRow, TableCell, IconButton } from '@mui/material';
 import { DriveFileRenameOutline, DeleteOutline, People } from '@mui/icons-material';
@@ -21,7 +21,6 @@ interface Props {
 const ElectionTab: React.FC<Props> = ({ election, columns }) => {
   const navigate = useNavigate();
   const [alertOpen, setAlertOpen] = useState(false);
-  const hasElectionStarted = useMemo(() => Date.now() > new Date(election.startTime).getTime(), []);
 
   const [
     deleteElection,
@@ -79,10 +78,19 @@ const ElectionTab: React.FC<Props> = ({ election, columns }) => {
       })}
 
       <TableCell role='cell' style={{ minWidth: 10 }}>
-        <Tooltip title='Edit Election details'>
-          <IconButton aria-label='edit' className='cursor-pointer' onClick={navigateEditPage}>
-            <DriveFileRenameOutline />
-          </IconButton>
+        <Tooltip
+          title={election.hasEnded ? 'Cannot edit completed election' : 'Edit Election details'}
+        >
+          <span>
+            <IconButton
+              aria-label='edit'
+              className='cursor-pointer'
+              onClick={navigateEditPage}
+              disabled={election.hasEnded}
+            >
+              <DriveFileRenameOutline />
+            </IconButton>
+          </span>
         </Tooltip>
       </TableCell>
 
@@ -101,7 +109,7 @@ const ElectionTab: React.FC<Props> = ({ election, columns }) => {
       <TableCell role='cell' style={{ minWidth: 10 }}>
         <Tooltip
           title={
-            hasElectionStarted
+            election.hasStarted
               ? 'Cannot deleted commenced election'
               : isDeleteSuccess
               ? 'Election deleted'
@@ -114,8 +122,7 @@ const ElectionTab: React.FC<Props> = ({ election, columns }) => {
             <IconButton
               aria-label='delete'
               onClick={handleDelete}
-              className='disabled:!cursor-not-allowed'
-              disabled={hasElectionStarted || isDeleteLoading || isDeleteSuccess}
+              disabled={election.hasStarted || isDeleteLoading || isDeleteSuccess}
             >
               <DeleteOutline />
             </IconButton>

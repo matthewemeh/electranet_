@@ -25,6 +25,9 @@ export const PATHS = {
     FETCH: '/elections',
     ADD: '/elections/add',
     EDIT: '/elections/edit',
+    ELECTION: '/elections/:id',
     CONTESTANTS: '/elections/contestants',
+    ELECTION_RESULTS: '/elections/:id/results',
   },
+  FACE_ID_REGISTER: '/face-id/register',
 } as const;

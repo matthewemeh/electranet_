@@ -19,20 +19,21 @@ const PartyUpdate = () => {
   const navigate = useNavigate();
   const goBack = () => navigate(PATHS.PARTIES.FETCH);
 
-  const partyToUpdate: Partial<Party> = useMemo(() => {
+  const partyToUpdate: Party | undefined = useMemo(() => {
     const party = localStorage.getItem('partyToUpdate');
-    if (!party) return {};
+    if (!party) return;
 
     localStorage.removeItem('partyToUpdate');
     return JSON.parse(party) as Party;
   }, []);
 
   useEffect(() => {
-    if (isEmptyObject(partyToUpdate)) goBack();
+    if (!partyToUpdate) goBack();
   }, [partyToUpdate]);
+  if (!partyToUpdate) return;
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [payload, setPayload] = useState<UpdatePartyPayload>({ id: partyToUpdate._id! });
+  const [payload, setPayload] = useState<UpdatePartyPayload>({ id: partyToUpdate._id });
   const [
     updateParty,
     {

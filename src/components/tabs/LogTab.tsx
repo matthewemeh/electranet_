@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { FaCircleInfo } from 'react-icons/fa6';
 import { Tooltip, TableRow, TableCell } from '@mui/material';
 
-import type { Column } from '../../pages/logs/Logs';
+import type { Column } from '../../pages/logs';
 
 interface Props {
   log: Log;

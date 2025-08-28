@@ -19,10 +19,7 @@ import {
 import { isEmptyObject } from '../../utils';
 import { PATHS } from '../../routes/PathConstants';
 import { useGetPartiesQuery } from '../../services/apis/partyApi';
-import {
-  useHandleReduxQueryError,
-  useHandleReduxQuerySuccess,
-} from '../../hooks/useHandleReduxQuery';
+import { useHandleReduxQueryError } from '../../hooks/useHandleReduxQuery';
 import {
   PartyTab,
   EmptyList,
@@ -69,12 +66,11 @@ const Parties = () => {
     error: getError,
     isError: isGetError,
     isLoading: isGetLoading,
-    isSuccess: isGetSuccess,
   } = useGetPartiesQuery({
     params: {
       page,
       limit: rowsPerPage,
-      sortBy: JSON.stringify(isEmptyObject(sortBy) ? { lastName: 1 } : sortBy),
+      sortBy: JSON.stringify(isEmptyObject(sortBy) ? { longName: 1 } : sortBy),
       ...queryParams,
     },
   });
@@ -160,11 +156,6 @@ const Parties = () => {
     };
   };
 
-  useHandleReduxQuerySuccess({
-    response: getData,
-    isSuccess: isGetSuccess,
-    showSuccessMessage: false,
-  });
   useHandleReduxQueryError({ isError: isGetError, error: getError, refetch });
 
   if (isGetLoading) {

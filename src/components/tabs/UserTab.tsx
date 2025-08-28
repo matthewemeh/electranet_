@@ -7,7 +7,7 @@ import { AdminPanelSettingsOutlined, VerifiedUserOutlined } from '@mui/icons-mat
 
 import AlertDialog from '../AlertDialog';
 import DatePicker from '../inputs/DatePicker';
-import type { Column } from '../../pages/users/Users';
+import type { Column } from '../../pages/users';
 import {
   useHandleReduxQueryError,
   useHandleReduxQuerySuccess,
@@ -92,7 +92,6 @@ const UserTab: React.FC<Props> = ({ columns, user, onInviteSuccess }) => {
             <IconButton
               aria-label='invite user'
               onClick={() => setAlertOpen(true)}
-              className='disabled:!cursor-not-allowed'
               disabled={user.role === 'USER' || user.isInvited || isLoading || isSuccess}
             >
               {user.isInvited || isSuccess ? (

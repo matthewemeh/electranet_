@@ -24,7 +24,8 @@ const AuthLayout = () => {
         (pathname === REGISTER_ADMIN && searchParams.get('stage') !== `${AdminStage.OTP}`) ||
         (pathname === REGISTER_USER && searchParams.get('stage') !== `${UserStage.OTP}`))
     ) {
-      navigate(DASHBOARD);
+      const externalIntent = searchParams.get('external-intent');
+      externalIntent ? navigate(externalIntent) : navigate(DASHBOARD);
     }
   }, [pathname, searchParams, isAuthenticated]);
 

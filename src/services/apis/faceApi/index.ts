@@ -20,12 +20,13 @@ const faceIdApi = createApi({
         return { body: formData, method: 'POST', url: FACE_ID.REGISTER };
       },
     }),
-    fetchFace: builder.mutation<NullResponse, void>({
+    fetchFace: builder.query<FaceIdResponse, void>({
+      keepUnusedDataFor: 300,
       query: () => ({ method: 'GET', url: FACE_ID.FETCH }),
     }),
   }),
 });
 
-export const { useFetchFaceMutation, useRegisterFaceMutation } = faceIdApi;
+export const { useLazyFetchFaceQuery, useRegisterFaceMutation } = faceIdApi;
 
 export default faceIdApi;

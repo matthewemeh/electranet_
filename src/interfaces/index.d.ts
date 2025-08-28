@@ -40,6 +40,7 @@ interface MinifiedUser {
 interface CurrentUser {
   role: Role;
   email: string;
+  faceID?: boolean;
   lastName: string;
   firstName: string;
   middleName?: string;
@@ -58,6 +59,8 @@ interface Election {
   name: string;
   endTime: string;
   startTime: string;
+  hasEnded: boolean;
+  hasStarted: boolean;
   delimitationCode: string;
 }
 

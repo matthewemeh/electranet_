@@ -18,8 +18,8 @@ import constants from '../../constants';
 import { showAlert } from '../../utils';
 import AlertDialog from '../AlertDialog';
 import DatePicker from '../inputs/DatePicker';
+import type { Column } from '../../pages/tokens';
 import DropdownInput from '../inputs/DropdownInput';
-import type { Column } from '../../pages/tokens/Tokens';
 import {
   useHandleReduxQueryError,
   useHandleReduxQuerySuccess,
@@ -86,25 +86,29 @@ const TokenTab: React.FC<Props> = ({ columns, token, onInviteSuccess }) => {
         } else if (id === 'createdAt') {
           value = moment(token.createdAt).format('LL');
         } else if (id === 'rightsStatus') {
-          value = token.hasExpired ? 'EXPIRED' : token.statusCode || 'Unavailable';
+          if (token.statusCode === ADMIN_TOKEN_STATUSES.REVOKED) {
+            value = ADMIN_TOKEN_STATUSES.REVOKED;
+          } else {
+            value = token.hasExpired ? 'EXPIRED' : token.statusCode || 'Unavailable';
+          }
         } else if (id === 'expiresAt') {
           value = token.expiresAt ? moment(token.expiresAt).format('LL') : 'Never Expires';
         } else {
           value = token[id] as string;
         }
 
-        let statusClass = '';
         let dotClass = '';
+        let statusClass = '';
         if (id === 'rightsStatus') {
-          if (value === ADMIN_TOKEN_STATUSES.ACTIVE) {
-            statusClass = '!text-green-600 !bg-green-200';
-            dotClass = '!bg-green-600';
-          } else if (value === ADMIN_TOKEN_STATUSES.REVOKED) {
+          if (value === ADMIN_TOKEN_STATUSES.REVOKED) {
             statusClass = '!text-red-600 !bg-red-200';
             dotClass = '!bg-red-600';
-          } else if (value === 'EXPIRED') {
+          } else if (token.hasExpired) {
             statusClass = '!text-orange-600 !bg-orange-200';
             dotClass = '!bg-orange-600';
+          } else if (value === ADMIN_TOKEN_STATUSES.ACTIVE) {
+            statusClass = '!text-green-600 !bg-green-200';
+            dotClass = '!bg-green-600';
           }
         }
 
@@ -137,7 +141,6 @@ const TokenTab: React.FC<Props> = ({ columns, token, onInviteSuccess }) => {
               disabled={isLoading}
               aria-label='modify admin rights'
               onClick={() => setAlertOpen(true)}
-              className='disabled:!cursor-not-allowed'
             >
               <AdminPanelSettingsOutlined />
             </IconButton>

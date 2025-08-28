@@ -2,7 +2,7 @@ import { lazy } from 'react';
 import type { RouteObject } from 'react-router-dom';
 
 import { PATHS } from './PathConstants';
-const Logs = lazy(() => import('../pages/logs/Logs'));
+const Logs = lazy(() => import('../pages/logs'));
 const Parties = lazy(() => import('../pages/parties'));
 const Elections = lazy(() => import('../pages/elections'));
 const Contestants = lazy(() => import('../pages/contestants'));

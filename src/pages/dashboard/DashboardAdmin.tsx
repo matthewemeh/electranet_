@@ -13,15 +13,11 @@ import {
   TableContainer,
 } from '@mui/material';
 
-import { LogTab } from '../../components';
-import type { Column } from '../logs/Logs';
+import type { Column } from '../logs';
 import { PATHS } from '../../routes/PathConstants';
-import { Loading, AlertDialog } from '../../components';
 import { useGetLogsQuery } from '../../services/apis/logApi';
-import {
-  useHandleReduxQueryError,
-  useHandleReduxQuerySuccess,
-} from '../../hooks/useHandleReduxQuery';
+import { Loading, AlertDialog, LogTab } from '../../components';
+import { useHandleReduxQueryError } from '../../hooks/useHandleReduxQuery';
 
 const Dashboard = () => {
   const { LOGS } = PATHS;
@@ -35,7 +31,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [alertOpen, setAlertOpen] = useState(false);
   const [selectedLog, setSelectedLog] = useState<Log>();
-  const { isError, error, isLoading, isSuccess, data, refetch } = useGetLogsQuery({});
+  const { isError, error, isLoading, data, refetch } = useGetLogsQuery({});
 
   const goToLogsPage = () => navigate(LOGS);
 
@@ -59,7 +55,6 @@ const Dashboard = () => {
     );
   }, [selectedLog]);
 
-  useHandleReduxQuerySuccess({ isSuccess, response: data, showSuccessMessage: false });
   useHandleReduxQueryError({ isError, error, refetch });
 
   return (
@@ -82,9 +77,9 @@ const Dashboard = () => {
                   <TableRow role='row'>
                     {columns.map(({ id, label, align, minWidth, maxWidth }) => (
                       <TableCell
-                        role='columnheader'
                         key={id}
                         align={align}
+                        role='columnheader'
                         style={{ minWidth, maxWidth }}
                       >
                         {label}

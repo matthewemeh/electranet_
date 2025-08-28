@@ -25,17 +25,18 @@ const ElectionUpdate = () => {
     return slots;
   }, [generateTimeSlots]);
 
-  const electionToUpdate: Partial<Election> = useMemo(() => {
+  const electionToUpdate: Election | undefined = useMemo(() => {
     const election = localStorage.getItem('electionToUpdate');
-    if (!election) return {};
+    if (!election) return;
 
     localStorage.removeItem('electionToUpdate');
     return JSON.parse(election) as Election;
   }, []);
 
   useEffect(() => {
-    if (isEmptyObject(electionToUpdate)) goBack();
+    if (!electionToUpdate) goBack();
   }, [electionToUpdate]);
+  if (!electionToUpdate) return;
 
   const [startDate, setStartDate] = useState<Date | undefined>(
     electionToUpdate.startTime ? new Date(electionToUpdate.startTime) : undefined
@@ -48,7 +49,7 @@ const ElectionUpdate = () => {
   );
   const [endTime, setEndTime] = useState<string>(endDate ? moment(endDate).format('HH:mm') : '');
 
-  const [payload, setPayload] = useState<UpdateElectionPayload>({ id: electionToUpdate._id! });
+  const [payload, setPayload] = useState<UpdateElectionPayload>({ id: electionToUpdate._id });
   const [
     updateElection,
     {
@@ -135,6 +136,7 @@ const ElectionUpdate = () => {
           className='form-field'
           onChange={handleChange}
           defaultValue={electionToUpdate.name}
+          disabled={electionToUpdate.hasStarted}
         />
 
         <TextField
@@ -145,6 +147,7 @@ const ElectionUpdate = () => {
           className='form-field'
           onChange={handleChange}
           defaultValue={electionToUpdate.delimitationCode}
+          disabled={electionToUpdate.hasStarted}
         />
 
         <div className='grid grid-cols-[2fr_1fr] gap-2'>
@@ -155,6 +158,7 @@ const ElectionUpdate = () => {
             name='startDate'
             label='Start Date'
             autoComplete='off'
+            disabled={electionToUpdate.hasStarted}
             onClick={() => setStartDatePickerVisible(true)}
             value={startDate ? moment(startDate).format('ll') : ''}
           />
@@ -165,6 +169,7 @@ const ElectionUpdate = () => {
             label='Start Time'
             menuItems={timeSlots}
             onChange={handleStartTimeChange}
+            disabled={electionToUpdate.hasStarted}
           />
         </div>
         <DatePicker

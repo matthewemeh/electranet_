@@ -1,3 +1,4 @@
+export { default as Modal } from './Modal';
 export { default as Navbar } from './Navbar';
 export { default as Banner } from './Banner';
 export { default as Overlay } from './Overlay';
@@ -41,8 +42,11 @@ export { default as TokenTab } from './tabs/TokenTab';
 export { default as PartyTab } from './tabs/PartyTab';
 export { default as ElectionTab } from './tabs/ElectionTab';
 export { default as ContestantTab } from './tabs/ContestantTab';
+export { default as UserElectionTab } from './tabs/UserElectionTab';
 
 // filters
 export { default as LogFilters } from './filters/LogFilters';
 export { default as UserFilters } from './filters/UserFilters';
+export { default as ElectionFilters } from './filters/ElectionFilters';
 export { default as ContestantFilters } from './filters/ContestantFilters';
+export { default as UserElectionFilters } from './filters/UserElectionFilters';

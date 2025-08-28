@@ -54,6 +54,10 @@ interface ResultResponse extends BaseResponse {
   };
 }
 
+interface FaceIdResponse extends BaseResponse {
+  data: { signedUrl: string };
+}
+
 interface VoteResponse extends BaseResponse {
   data: { voteID: string };
 }

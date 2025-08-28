@@ -20,20 +20,21 @@ const ContestantUpdate = () => {
   const navigate = useNavigate();
   const goBack = () => navigate(PATHS.CONTESTANTS.FETCH);
 
-  const contestantToUpdate: Partial<Contestant> = useMemo(() => {
+  const contestantToUpdate: Contestant | undefined = useMemo(() => {
     const contestant = localStorage.getItem('contestantToUpdate');
-    if (!contestant) return {};
+    if (!contestant) return;
 
     localStorage.removeItem('contestantToUpdate');
     return JSON.parse(contestant) as Contestant;
   }, []);
 
   useEffect(() => {
-    if (isEmptyObject(contestantToUpdate)) goBack();
+    if (!contestantToUpdate) goBack();
   }, [contestantToUpdate]);
+  if (!contestantToUpdate) return;
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [payload, setPayload] = useState<UpdateContestantPayload>({ id: contestantToUpdate._id! });
+  const [payload, setPayload] = useState<UpdateContestantPayload>({ id: contestantToUpdate._id });
   const [
     updateContestant,
     {
