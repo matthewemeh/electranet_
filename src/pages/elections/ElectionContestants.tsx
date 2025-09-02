@@ -232,12 +232,8 @@ const Contestants = () => {
                       onClick={handleSortClick(id, isSortDisabled)}
                     >
                       {label}
-                      <IoIosArrowRoundUp
-                        className={`sort-up w-5 h-5 inline-block ${isSortDisabled && '!hidden'}`}
-                      />
-                      <IoIosArrowRoundDown
-                        className={`sort-down w-5 h-5 inline-block ${isSortDisabled && '!hidden'}`}
-                      />
+                      <IoIosArrowRoundUp className={`sort-up ${isSortDisabled && '!hidden'}`} />
+                      <IoIosArrowRoundDown className={`sort-down ${isSortDisabled && '!hidden'}`} />
                     </TableCell>
                   );
                 })}

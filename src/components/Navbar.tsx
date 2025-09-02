@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { MenuRounded, MenuOpenRounded, MoreVert } from '@mui/icons-material';
 import { Avatar, Button, Chip, IconButton, Tooltip, useMediaQuery } from '@mui/material';
+import { MenuRounded, MenuOpenRounded, MoreVert, Notifications } from '@mui/icons-material';
 
 import Overlay from './Overlay';
 import ThemeToggle from './ThemeToggle';
@@ -44,6 +44,7 @@ const Navbar = () => {
     ELECTIONS,
     DASHBOARD,
     CONTESTANTS,
+    NOTIFICATIONS,
     AUTH: { LOGIN, REGISTER_USER },
   } = PATHS;
 
@@ -104,9 +105,7 @@ const Navbar = () => {
     return true;
   };
 
-  const filteredNavLinks = useMemo(() => {
-    return navLinks.filter(navLinkFilter);
-  }, [navLinks]);
+  const filteredNavLinks = useMemo(() => navLinks.filter(navLinkFilter), [navLinks]);
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -128,6 +127,8 @@ const Navbar = () => {
   const toggleNav = () => setMenuOpened(opened => !opened);
 
   const toggleShowMore = () => setShowMore(show => !show);
+
+  const handleNotificationsClick = () => navigate(NOTIFICATIONS);
 
   const handleLogout = async () => {
     await logout();
@@ -209,6 +210,16 @@ const Navbar = () => {
       </div>
 
       <ThemeToggle />
+
+      <Tooltip title='Notifications'>
+        <IconButton
+          className='w-9 h-9'
+          aria-label='notifications'
+          onClick={handleNotificationsClick}
+        >
+          <Notifications className='text-primary-700' />
+        </IconButton>
+      </Tooltip>
 
       <Overlay visible={showMore} onClick={toggleShowMore} extraClassNames='bg-transparent' />
 

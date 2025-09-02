@@ -132,21 +132,17 @@ const Tokens = () => {
             <TableRow role='row'>
               {columns.map(({ id, label, align, minWidth, maxWidth }) => (
                 <TableCell
-                  role='columnheader'
                   key={id}
                   data-sort='0'
                   align={align}
+                  role='columnheader'
                   style={{ minWidth, maxWidth }}
                   className='!font-semibold !text-base'
                   onClick={handleSortClick(id, isGetLoading)}
                 >
                   {label}
-                  <IoIosArrowRoundUp
-                    className={`sort-up w-5 h-5 inline-block ${isGetLoading && '!hidden'}`}
-                  />
-                  <IoIosArrowRoundDown
-                    className={`sort-down w-5 h-5 inline-block ${isGetLoading && '!hidden'}`}
-                  />
+                  <IoIosArrowRoundUp className={`sort-up ${isGetLoading && '!hidden'}`} />
+                  <IoIosArrowRoundDown className={`sort-down ${isGetLoading && '!hidden'}`} />
                 </TableCell>
               ))}
               <TableCell role='columnheader' style={{ minWidth: 10 }} />

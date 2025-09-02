@@ -181,6 +181,11 @@ input[type='checkbox'] {
   @apply z-2 scale-350;
 }
 
+.sort-up,
+.sort-down {
+  @apply w-5 h-5 inline-block;
+}
+
 th[data-sort='2'] .sort-up,
 th[data-sort='1'] .sort-down,
 th[data-sort='0'] :is(.sort-up, .sort-down) {
@@ -206,7 +211,7 @@ th[data-sort='0'] :is(.sort-up, .sort-down) {
 /* ================ THEME TOGGLE BUTTON STYLING ================= */
 
 .toggle {
-  @apply bg-white w-8 h-8 rounded-half grid place-items-center cursor-pointer border leading-none;
+  @apply bg-white w-8 h-8 rounded-half grid place-items-center cursor-pointer border border-primary-700 leading-none;
 }
 
 .toggle * {
@@ -221,6 +226,10 @@ th[data-sort='0'] :is(.sort-up, .sort-down) {
   grid-row: 1 / 1;
   grid-column: 1 / 1;
   @apply transition-transform duration-500;
+}
+
+.icon path {
+  @apply !fill-primary-700;
 }
 
 .icon-moon {

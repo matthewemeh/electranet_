@@ -17,17 +17,13 @@ import {
 
 import { isEmptyObject } from '../../utils';
 import { useHandleReduxQueryError } from '../../hooks/useHandleReduxQuery';
-import {
-  useGetUserElectionsQuery,
-  useGetUserVotedElectionsQuery,
-} from '../../services/apis/electionApi';
+import { useGetNotificationsQuery } from '../../services/apis/notificationApi';
 import {
   EmptyList,
-  InfoButton,
-  LoadingPaper,
   FilterButton,
-  UserElectionTab,
-  UserElectionFilters,
+  LoadingPaper,
+  NotificationTab,
+  NotificationFilters,
   TablePaginationActions,
 } from '../../components';
 
@@ -35,15 +31,14 @@ export interface Column extends TableCellProps {
   label: string;
   maxWidth?: number;
   minWidth?: number;
-  id: keyof Election;
+  id: keyof Notification_;
   format?: (value: number) => string;
 }
 
-const Elections = () => {
+const Notifications = () => {
   const columns: readonly Column[] = [
-    { id: 'name', label: 'Election Name', maxWidth: 170 },
-    { id: 'startTime', label: 'Starts at', minWidth: 30 },
-    { id: 'endTime', label: 'Ends at', minWidth: 30 },
+    { id: 'createdAt', label: 'Date', minWidth: 120 },
+    { id: 'message', label: 'Message', minWidth: 200 },
   ];
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -61,33 +56,22 @@ const Elections = () => {
   const [sortBy, setSortBy] = useState({});
   const [isFiltersOn, setIsFiltersOn] = useState(false);
   const [filterAlertOpen, setFilterAlertOpen] = useState(false);
-  const [filters, setFilters] = useState<GetElectionsPayload['params']>({});
+  const [filters, setFilters] = useState<GetNotificationsPayload['params']>({});
   const {
-    data: getElectionsData,
-    error: getElectionsError,
-    refetch: refetchElections,
-    isError: isGetElectionsError,
-    isLoading: isGetElectionsLoading,
-  } = useGetUserElectionsQuery({
+    refetch,
+    data: getData,
+    error: getError,
+    isError: isGetError,
+    isLoading: isGetLoading,
+  } = useGetNotificationsQuery({
     params: {
       page,
       limit: rowsPerPage,
-      sortBy: JSON.stringify(isEmptyObject(sortBy) ? { startTime: -1 } : sortBy),
+      sortBy: JSON.stringify(isEmptyObject(sortBy) ? { createdAt: -1 } : sortBy),
       ...filters,
       ...queryParams,
     },
   });
-  const {
-    data: getVotedElectionsData,
-    error: getVotedElectionsError,
-    refetch: refetchVotedElections,
-    isError: isGetVotedElectionsError,
-    isLoading: isGetVotedElectionsLoading,
-  } = useGetUserVotedElectionsQuery();
-
-  const hasVoted = (electionID: string) => {
-    return getVotedElectionsData?.data.some(({ election }) => election === electionID);
-  };
 
   const handleRowsPerPageChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -102,6 +86,18 @@ const Elections = () => {
   };
 
   const handleFilterClick = () => setFilterAlertOpen(true);
+
+  useEffect(() => {
+    setPage(1);
+    if (isEmptyObject(filters as object)) {
+      setIsFiltersOn(false);
+    } else {
+      setIsFiltersOn(true);
+
+      // clear any existing search params
+      if (searchParams.size > 0) setSearchParams({});
+    }
+  }, [filters]);
 
   const handleSortClick = (id: Column['id'], isSortDisabled: boolean) => {
     return (e: React.MouseEvent<HTMLTableCellElement>) => {
@@ -139,36 +135,14 @@ const Elections = () => {
     };
   };
 
-  useEffect(() => {
-    setPage(1);
-    if (isEmptyObject(filters as object)) {
-      setIsFiltersOn(false);
-    } else {
-      setIsFiltersOn(true);
+  useHandleReduxQueryError({ isError: isGetError, error: getError, refetch });
 
-      // clear any existing search params
-      if (searchParams.size > 0) setSearchParams({});
-    }
-  }, [filters]);
-
-  useHandleReduxQueryError({
-    error: getElectionsError,
-    refetch: refetchElections,
-    isError: isGetElectionsError,
-  });
-
-  useHandleReduxQueryError({
-    error: getVotedElectionsError,
-    refetch: refetchVotedElections,
-    isError: isGetVotedElectionsError,
-  });
-
-  if (isGetElectionsLoading || isGetVotedElectionsLoading) {
+  if (isGetLoading) {
     return <LoadingPaper />;
-  } else if (!getVotedElectionsData || !getElectionsData || getElectionsData.data.totalDocs === 0) {
+  } else if (!getData || getData.data.totalDocs === 0) {
     return (
       <EmptyList
-        emptyText='No elections found'
+        emptyText='No notifications found'
         addComponent={
           isFiltersOn && (
             <div className='flex items-center gap-2'>
@@ -186,11 +160,11 @@ const Elections = () => {
   return (
     <Paper className='table-wrapper'>
       <TableContainer className='rounded-3xl'>
-        <Table stickyHeader aria-label='elections' className='relative'>
+        <Table stickyHeader aria-label='notifications' className='relative'>
           <TableHead>
             <TableRow role='row'>
               {columns.map(({ id, label, align, minWidth, maxWidth }) => {
-                const isSortDisabled = isGetElectionsLoading;
+                const isSortDisabled = id !== 'createdAt' || isGetLoading;
 
                 return (
                   <TableCell
@@ -203,34 +177,33 @@ const Elections = () => {
                     onClick={handleSortClick(id, isSortDisabled)}
                   >
                     {label}
-                    <IoIosArrowRoundUp className={`sort-up ${isSortDisabled && '!hidden'}`} />
-                    <IoIosArrowRoundDown className={`sort-down ${isSortDisabled && '!hidden'}`} />
+                    <IoIosArrowRoundUp className={`sort-up ${isGetLoading && '!hidden'}`} />
+                    <IoIosArrowRoundDown className={`sort-down ${isGetLoading && '!hidden'}`} />
                   </TableCell>
                 );
               })}
-              <TableCell role='columnheader' style={{ minWidth: 10 }} />
-              <TableCell role='columnheader' style={{ minWidth: 10 }} />
             </TableRow>
           </TableHead>
 
           <TableBody>
-            {getElectionsData.data.docs.map(election => (
-              <UserElectionTab
+            {getData.data.docs.map(notification => (
+              <NotificationTab
                 columns={columns}
-                key={election._id}
-                election={election}
-                hasVoted={hasVoted(election._id)}
+                key={notification._id}
+                notification={notification}
               />
             ))}
           </TableBody>
         </Table>
       </TableContainer>
 
-      <InfoButton title="Elections' information takes about 5 minutes to reflect any changes you make" />
+      <FilterButton
+        isFiltersOn={isFiltersOn}
+        onClick={handleFilterClick}
+        extraContainerClass='!left-5'
+      />
 
-      <FilterButton isFiltersOn={isFiltersOn} onClick={handleFilterClick} />
-
-      <UserElectionFilters
+      <NotificationFilters
         open={filterAlertOpen}
         setFilters={setFilters}
         setOpen={setFilterAlertOpen}
@@ -239,10 +212,10 @@ const Elections = () => {
       <TablePagination
         component='div'
         rowsPerPage={rowsPerPage}
+        page={getData.data.page - 1}
+        count={getData.data.totalDocs}
         onPageChange={handlePageChange}
         rowsPerPageOptions={[10, 25, 50]}
-        page={getElectionsData.data.page - 1}
-        count={getElectionsData.data.totalDocs}
         ActionsComponent={TablePaginationActions}
         onRowsPerPageChange={handleRowsPerPageChange}
       />
@@ -250,4 +223,4 @@ const Elections = () => {
   );
 };
 
-export default Elections;
+export default Notifications;

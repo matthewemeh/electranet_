@@ -43,6 +43,7 @@ export { default as PartyTab } from './tabs/PartyTab';
 export { default as ElectionTab } from './tabs/ElectionTab';
 export { default as ContestantTab } from './tabs/ContestantTab';
 export { default as UserElectionTab } from './tabs/UserElectionTab';
+export { default as NotificationTab } from './tabs/NotificationTab';
 
 // filters
 export { default as LogFilters } from './filters/LogFilters';
@@ -50,3 +51,4 @@ export { default as UserFilters } from './filters/UserFilters';
 export { default as ElectionFilters } from './filters/ElectionFilters';
 export { default as ContestantFilters } from './filters/ContestantFilters';
 export { default as UserElectionFilters } from './filters/UserElectionFilters';
+export { default as NotificationFilters } from './filters/NotificationFilters';

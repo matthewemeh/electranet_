@@ -7,6 +7,7 @@ const Parties = lazy(() => import('../pages/parties'));
 const Elections = lazy(() => import('../pages/elections'));
 const Contestants = lazy(() => import('../pages/contestants'));
 const PartyAdd = lazy(() => import('../pages/parties/PartyAdd'));
+const Notifications = lazy(() => import('../pages/notifications'));
 const PartyUpdate = lazy(() => import('../pages/parties/PartyUpdate'));
 const ElectionAdd = lazy(() => import('../pages/elections/ElectionAdd'));
 const Dashboard = lazy(() => import('../pages/dashboard/DashboardAdmin'));
@@ -15,7 +16,7 @@ const ContestantAdd = lazy(() => import('../pages/contestants/ContestantAdd'));
 const ContestantUpdate = lazy(() => import('../pages/contestants/ContestantUpdate'));
 const ElectionContestants = lazy(() => import('../pages/elections/ElectionContestants'));
 
-const { CONTESTANTS, DASHBOARD, ELECTIONS, LOGS, PARTIES, RESULTS } = PATHS;
+const { CONTESTANTS, DASHBOARD, ELECTIONS, LOGS, NOTIFICATIONS, PARTIES, RESULTS } = PATHS;
 
 const adminRoutes: RouteObject[] = [
   { path: DASHBOARD, element: <Dashboard />, index: true },
@@ -27,6 +28,7 @@ const adminRoutes: RouteObject[] = [
   { path: PARTIES.EDIT, element: <PartyUpdate /> },
   { path: ELECTIONS.FETCH, element: <Elections /> },
   { path: ELECTIONS.ADD, element: <ElectionAdd /> },
+  { path: NOTIFICATIONS, element: <Notifications /> },
   { path: CONTESTANTS.FETCH, element: <Contestants /> },
   { path: CONTESTANTS.ADD, element: <ContestantAdd /> },
   { path: ELECTIONS.EDIT, element: <ElectionUpdate /> },
