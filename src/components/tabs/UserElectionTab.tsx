@@ -9,10 +9,11 @@ import { useAppSelector } from '../../hooks/useRootStorage';
 
 interface Props {
   election: Election;
+  hasVoted?: boolean;
   columns: readonly Column[];
 }
 
-const UserElectionTab: React.FC<Props> = ({ election, columns }) => {
+const UserElectionTab: React.FC<Props> = ({ election, columns, hasVoted }) => {
   const navigate = useNavigate();
   const { currentUser } = useAppSelector(state => state.authStore);
 
@@ -29,7 +30,7 @@ const UserElectionTab: React.FC<Props> = ({ election, columns }) => {
 
   const navigateElectionResultPage = () => {
     sessionStorage.setItem('election', JSON.stringify(election));
-    navigate(PATHS.ELECTIONS.ELECTION_RESULTS.replace(':id', election._id));
+    navigate(PATHS.RESULTS.RESULT.replace(':id', election._id));
   };
 
   return (
@@ -55,7 +56,9 @@ const UserElectionTab: React.FC<Props> = ({ election, columns }) => {
       <TableCell role='cell' style={{ minWidth: 10 }}>
         <Tooltip
           title={
-            election.hasEnded
+            hasVoted
+              ? 'You have already voted in this election'
+              : election.hasEnded
               ? `Election ended ${moment(election.endTime).fromNow()}`
               : election.hasStarted
               ? 'Cast your vote'
@@ -68,7 +71,7 @@ const UserElectionTab: React.FC<Props> = ({ election, columns }) => {
               aria-label='cast vote'
               className='cursor-pointer'
               onClick={navigateElectionPage}
-              disabled={!election.hasStarted || election.hasEnded}
+              disabled={hasVoted || !election.hasStarted || election.hasEnded}
             >
               Vote
             </Button>

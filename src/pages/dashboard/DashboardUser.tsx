@@ -15,8 +15,11 @@ import {
 import type { Column } from '../user-elections';
 import { PATHS } from '../../routes/PathConstants';
 import { UserElectionTab, Loading } from '../../components';
-import { useGetUserElectionsQuery } from '../../services/apis/electionApi';
 import { useHandleReduxQueryError } from '../../hooks/useHandleReduxQuery';
+import {
+  useGetUserElectionsQuery,
+  useGetUserVotedElectionsQuery,
+} from '../../services/apis/electionApi';
 
 const Dashboard = () => {
   const { ELECTIONS } = PATHS;
@@ -27,20 +30,47 @@ const Dashboard = () => {
   ];
 
   const navigate = useNavigate();
-  const { isError, error, isLoading, data, refetch } = useGetUserElectionsQuery({});
+  const {
+    data: getElectionsData,
+    refetch: refetchElections,
+    error: getElectionsError,
+    isError: isGetElectionsError,
+    isLoading: isGetElectionsLoading,
+  } = useGetUserElectionsQuery({});
+  const {
+    data: getVotedElectionsData,
+    error: getVotedElectionsError,
+    refetch: refetchVotedElections,
+    isError: isGetVotedElectionsError,
+    isLoading: isGetVotedElectionsLoading,
+  } = useGetUserVotedElectionsQuery();
 
   const goToElectionsPage = () => navigate(ELECTIONS.FETCH);
 
-  useHandleReduxQueryError({ isError, error, refetch });
+  useHandleReduxQueryError({
+    error: getElectionsError,
+    refetch: refetchElections,
+    isError: isGetElectionsError,
+  });
+
+  useHandleReduxQueryError({
+    error: getVotedElectionsError,
+    refetch: refetchVotedElections,
+    isError: isGetVotedElectionsError,
+  });
+
+  const hasVoted = (electionID: string) => {
+    return getVotedElectionsData?.data.some(({ election }) => election === electionID);
+  };
 
   return (
     <div className='pb-10'>
       <h1 className='mt-10 text-4xl font-medium mb-5'>Your Elections</h1>
 
       <section>
-        {isLoading ? (
+        {isGetElectionsLoading || isGetVotedElectionsLoading ? (
           <Loading />
-        ) : !data || data.data.totalDocs === 0 ? (
+        ) : !getVotedElectionsData || !getElectionsData || getElectionsData.data.totalDocs === 0 ? (
           <Paper className='p-8 flex flex-col gap-2 items-center justify-center'>
             <Subject sx={{ fontSize: 60 }} />
             <p className='text-xl font-semibold'>No Elections found</p>
@@ -67,8 +97,13 @@ const Dashboard = () => {
                 </TableHead>
 
                 <TableBody>
-                  {data.data.docs.map(election => (
-                    <UserElectionTab key={election._id} election={election} columns={columns} />
+                  {getElectionsData.data.docs.map(election => (
+                    <UserElectionTab
+                      key={election._id}
+                      election={election}
+                      columns={columns}
+                      hasVoted={hasVoted(election._id)}
+                    />
                   ))}
                 </TableBody>
 

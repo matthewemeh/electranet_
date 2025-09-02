@@ -1,4 +1,5 @@
 import { groupBy } from 'lodash';
+import { LiaVoteYeaSolid } from 'react-icons/lia';
 import { useEffect, useMemo, useState } from 'react';
 import { TbFaceId, TbFaceIdError } from 'react-icons/tb';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -10,13 +11,16 @@ import { showAlert } from '../../utils';
 import { PATHS } from '../../routes/PathConstants';
 import { useAppSelector } from '../../hooks/useRootStorage';
 import { useLazyFetchFaceQuery } from '../../services/apis/faceApi';
-import { AlertDialog, EmptyList, Loading, LoadingPaper, Modal } from '../../components';
+import { log, warn, error as errorLog } from '../../utils/log.utils';
 import { useGetElectionContestantsQuery } from '../../services/apis/contestantApi';
+import { AlertDialog, EmptyList, Loading, LoadingPaper, Modal } from '../../components';
 import { useAddVoteTokenMutation, useCastVoteMutation } from '../../services/apis/voteApi';
 import {
   useHandleReduxQueryError,
   useHandleReduxQuerySuccess,
 } from '../../hooks/useHandleReduxQuery';
+
+const FACE_VERIFICATION_THRESHOLD = Number(import.meta.env.VITE_FACE_VERIFICATION_THRESHOLD || 0.6);
 
 const Election = () => {
   const { id } = useParams();
@@ -109,24 +113,20 @@ const Election = () => {
     return groupBy(getContestantsData.data, contestant => contestant.party?._id);
   }, [getContestantsData]);
 
-  const handleVoteConfirmation = (party?: Party) => {
-    setVoteDialogOpen(true);
-    setSelectedParty(party);
-  };
+  const isModalOpen = useMemo(
+    () => voteModalOpen || isAddTokenLoading || isCastVoteLoading || isCastVoteSuccess,
+    [voteModalOpen, isAddTokenLoading, isCastVoteLoading, isCastVoteSuccess]
+  );
 
-  const handleVoteAffirmation = () => setFaceModalOpen(true);
+  const releaseWebcam = () => {
+    const video = document.querySelector('video');
+    if (!video) return;
 
-  const handleVoteNegation = () => setSelectedParty(undefined);
-
-  const handleInfoClick = (contestant: Contestant) => {
-    setSelectedContestant(contestant);
-    setContestantAlertOpen(true);
-  };
-
-  const handlePageRefresh = () => {
-    // store election again to prevent user from being forced off this page after window reload
-    sessionStorage.setItem('election', JSON.stringify(electionToVote));
-    window.location.reload();
+    const stream = video.srcObject as MediaStream | null;
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      video.srcObject = null;
+    }
   };
 
   const accessWebcam = () => {
@@ -145,14 +145,38 @@ const Election = () => {
 
         // Monitor for track end (could be due to revocation)
         stream.getVideoTracks()[0].onended = () => {
-          console.warn('Video track ended, possibly permission revoked.');
+          warn('Video track ended, possibly permission revoked.');
           handlePageRefresh();
         };
       })
       .catch(err => {
-        console.error(err);
+        errorLog(err);
         showAlert({ msg: 'Please grant access to Camera', duration: 5000 });
       });
+  };
+
+  const handleVoteConfirmation = (party?: Party) => {
+    setSelectedParty(party);
+    isPermissionGranted ? setVoteDialogOpen(true) : accessWebcam();
+  };
+
+  const handleVoteAffirmation = () => setFaceModalOpen(true);
+
+  const handleVoteNegation = () => setSelectedParty(undefined);
+
+  const handleInfoClick = (contestant: Contestant) => {
+    setSelectedContestant(contestant);
+    setContestantAlertOpen(true);
+  };
+
+  const handlePageRefresh = () => {
+    // store election again to prevent user from being forced off this page after window reload
+    sessionStorage.setItem('election', JSON.stringify(electionToVote));
+    window.location.reload();
+  };
+
+  const handleVoteModalClose = () => {
+    if (isCastVoteSuccess) goBack();
   };
 
   const captureAndCompareFaces = async () => {
@@ -174,14 +198,14 @@ const Election = () => {
 
       if (!det1 || !det2) {
         showAlert({ msg: 'Face not detected. Please try again', duration: 5000 });
-        // console.log('det1', det1, 'det2', det2);
+        log('det1', det1, 'det2', det2);
         return;
       }
 
       // Compare
       const distance = euclideanDistance(det1.descriptor, det2.descriptor);
       const confidence = 1 - distance;
-      const match = confidence > 0.7;
+      const match = confidence > FACE_VERIFICATION_THRESHOLD;
 
       if (match) {
         showAlert({ msg: 'Face Verification successful' });
@@ -192,10 +216,10 @@ const Election = () => {
         showAlert({ msg: 'Face Verification failed! Please try again later', duration: 5000 });
         fetchFaceID();
       }
-      console.log(`Match: ${match ? '✅ Yes' : '❌ No'} (Confidence: ${confidence.toFixed(4)})`);
+      log(`Match: ${match ? '✅ Yes' : '❌ No'} (Confidence: ${confidence.toFixed(4)})`);
     } catch (error) {
-      showAlert({ msg: 'An error has occurred' });
-      console.error(error);
+      showAlert({ msg: 'An error has occurred. Please refresh and try again' });
+      errorLog(error);
     } finally {
       setIsSubmitting(false);
     }
@@ -242,7 +266,11 @@ const Election = () => {
   });
 
   // cast vote response handlers
-  useHandleReduxQuerySuccess({ response: castVoteData, isSuccess: isCastVoteSuccess });
+  useHandleReduxQuerySuccess({
+    response: castVoteData,
+    onSuccess: releaseWebcam,
+    isSuccess: isCastVoteSuccess,
+  });
   useHandleReduxQueryError({
     error: castVoteError,
     isError: isCastVoteError,
@@ -273,14 +301,6 @@ const Election = () => {
   });
 
   // face api response handlers
-  useHandleReduxQuerySuccess({
-    response: getFaceData,
-    showSuccessMessage: false,
-    isSuccess: isGetFaceSuccess,
-    onSuccess: () => {
-      if (!isPermissionGranted) accessWebcam();
-    },
-  });
   useHandleReduxQueryError({ isError: isGetFaceError, error: getFaceError, refetch: fetchFaceID });
 
   useEffect(() => {
@@ -304,12 +324,14 @@ const Election = () => {
     loadModels();
   }, []);
 
+  useEffect(() => {
+    if (isPermissionGranted) setVoteDialogOpen(true);
+  }, [isPermissionGranted]);
+
   if (isGetContestantsLoading) {
     return <LoadingPaper />;
   } else if (!getContestantsData || getContestantsData.data.length === 0) {
-    return (
-      <EmptyList url={PATHS.ELECTIONS.ADD} emptyText='No contestants found' addComponent={<></>} />
-    );
+    return <EmptyList emptyText='No contestants found' />;
   }
 
   return (
@@ -361,6 +383,7 @@ const Election = () => {
                 variant='contained'
                 endIcon={<HowToVote />}
                 onClick={() => handleVoteConfirmation(contestants[0].party)}
+                disabled={isAddTokenLoading || isCastVoteLoading || isCastVoteSuccess}
               >
                 Vote
               </Button>
@@ -376,6 +399,7 @@ const Election = () => {
         dialogContent={dialogContent}
         dialogTitle='Contestant Details'
         setOpen={setContestantAlertOpen}
+        onClose={() => setSelectedContestant(null)}
       />
 
       <AlertDialog
@@ -388,7 +412,7 @@ const Election = () => {
           selectedParty && (
             <div>
               <p>
-                Are you sure you want to vote the contestant(s) under{' '}
+                Are you sure you want to vote the contestant(s) under&nbsp;
                 <span className='font-bold'>
                   {selectedParty.longName} ({selectedParty.shortName})
                 </span>
@@ -461,18 +485,18 @@ const Election = () => {
       </Modal>
 
       <Modal
-        open={voteModalOpen}
+        open={isModalOpen}
         setOpen={setVoteModalOpen}
+        onClose={handleVoteModalClose}
         extraModalBoxStyle={{ maxHeight: '100dvh' }}
       >
         <div className='flex flex-col items-center justify-center gap-4'>
-          {voteMessage.type === 'loading' ? <Loading /> : <></>}
+          {voteMessage.type === 'loading' && <Loading />}
+          {isCastVoteSuccess && <LiaVoteYeaSolid className='w-20 h-20 text-primary-600' />}
           <p>{voteMessage.message}</p>
-          <div>
-            <Button variant='contained' disabled={!isCastVoteSuccess}>
-              Close
-            </Button>
-          </div>
+          <Button variant='contained' disabled={!isCastVoteSuccess} onClick={handleVoteModalClose}>
+            Close
+          </Button>
         </div>
       </Modal>
     </main>

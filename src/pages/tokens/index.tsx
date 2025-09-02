@@ -121,7 +121,7 @@ const Tokens = () => {
   if (isGetLoading) {
     return <LoadingPaper />;
   } else if (!getData || getData.data.totalDocs === 0) {
-    return <EmptyList addComponent={<></>} emptyText='No tokens found' />;
+    return <EmptyList emptyText='No tokens found' />;
   }
 
   return (

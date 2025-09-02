@@ -15,13 +15,15 @@ const ContestantAdd = lazy(() => import('../pages/contestants/ContestantAdd'));
 const ContestantUpdate = lazy(() => import('../pages/contestants/ContestantUpdate'));
 const ElectionContestants = lazy(() => import('../pages/elections/ElectionContestants'));
 
-const { CONTESTANTS, DASHBOARD, ELECTIONS, LOGS, PARTIES } = PATHS;
+const { CONTESTANTS, DASHBOARD, ELECTIONS, LOGS, PARTIES, RESULTS } = PATHS;
 
 const adminRoutes: RouteObject[] = [
   { path: DASHBOARD, element: <Dashboard />, index: true },
   { path: LOGS, element: <Logs /> },
   { path: PARTIES.ADD, element: <PartyAdd /> },
   { path: PARTIES.FETCH, element: <Parties /> },
+  { path: RESULTS.FETCH, element: <>Results</> },
+  { path: RESULTS.RESULT, element: <>Result</> },
   { path: PARTIES.EDIT, element: <PartyUpdate /> },
   { path: ELECTIONS.FETCH, element: <Elections /> },
   { path: ELECTIONS.ADD, element: <ElectionAdd /> },

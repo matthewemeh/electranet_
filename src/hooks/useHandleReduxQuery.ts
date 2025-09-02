@@ -6,6 +6,7 @@ import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { showAlert } from '../utils';
 import { PATHS } from '../routes/PathConstants';
 import { useAppDispatch } from './useRootStorage';
+import { error as errorLog } from '../utils/log.utils';
 import { logout } from '../services/apis/authApi/store';
 import { useLazyRefreshTokensQuery } from '../services/apis/authApi';
 
@@ -85,7 +86,7 @@ export const useHandleReduxQueryError = ({
     } else {
       showAlert({ msg: 'An error has occurred. Please try again', bgColor: '#ed3237' });
     }
-    console.error('Redux API error:', error);
+    errorLog('Redux API error:', error);
     onError?.();
   }, [isError, error]);
 
@@ -116,7 +117,7 @@ export const useHandleReduxQueryError = ({
     } else {
       showAlert({ msg: 'An error has occurred. Please try again', bgColor: '#ed3237' });
     }
-    console.error('Refresh error:', refreshError);
+    errorLog('Refresh error:', refreshError);
   }, [isRefreshError, refreshError]);
 
   useEffect(() => {

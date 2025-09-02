@@ -38,6 +38,7 @@ export default {
   GET_USER_ELECTIONS: '/elections/get-user-elections',
   ADD_ELECTION_CONTESTANT: '/elections/add-contestant/:id',
   REMOVE_ELECTION_CONTESTANT: '/elections/remove-contestant/:id',
+  GET_USER_VOTED_ELECTIONS: '/elections/get-user-voted-elections',
   FACE_ID: {
     FETCH: '/face-id/fetch',
     REGISTER: '/face-id/register',

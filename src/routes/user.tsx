@@ -6,14 +6,15 @@ const UserElections = lazy(() => import('../pages/user-elections'));
 const Election = lazy(() => import('../pages/user-elections/Election'));
 const Dashboard = lazy(() => import('../pages/dashboard/DashboardUser'));
 
-const { DASHBOARD, ELECTIONS, FACE_ID_REGISTER } = PATHS;
+const { DASHBOARD, ELECTIONS, FACE_ID_REGISTER, RESULTS } = PATHS;
 
 const userRoutes: RouteObject[] = [
   { path: DASHBOARD, element: <Dashboard />, index: true },
-  { path: ELECTIONS.FETCH, element: <UserElections /> },
-  { path: ELECTIONS.ELECTION_RESULTS, element: <></> },
+  { path: RESULTS.FETCH, element: <>Results</> },
+  { path: RESULTS.RESULT, element: <>Result</> },
   { path: ELECTIONS.ELECTION, element: <Election /> },
-  { path: FACE_ID_REGISTER, element: <></> },
+  { path: ELECTIONS.FETCH, element: <UserElections /> },
+  { path: FACE_ID_REGISTER, element: <>Face ID Registration</> },
 ];
 
 export default userRoutes;

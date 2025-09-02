@@ -23,11 +23,16 @@ const EmptyList: React.FC<EmptyListProps> = ({
     <div className='w-full h-[calc(100dvh-100px)] flex flex-col items-center justify-center gap-5'>
       {emptyIcon}
       <p className='text-xl font-medium'>{emptyText}</p>
-      {addComponent || (
-        <Button variant='contained' startIcon={<AddCircleOutline />} onClick={() => navigate(url)}>
-          {addText}
-        </Button>
-      )}
+      {addComponent ||
+        (addText && (
+          <Button
+            variant='contained'
+            startIcon={<AddCircleOutline />}
+            onClick={() => navigate(url)}
+          >
+            {addText}
+          </Button>
+        ))}
     </div>
   );
 };

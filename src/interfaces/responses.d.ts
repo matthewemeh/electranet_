@@ -62,6 +62,10 @@ interface VoteResponse extends BaseResponse {
   data: { voteID: string };
 }
 
+interface VotedElectionsResponse extends BaseResponse {
+  data: VotedElection[];
+}
+
 interface VerifyVoteResponse extends BaseResponse {
   data: {
     message: string;

@@ -117,26 +117,6 @@ input[type='checkbox'] {
   @apply left-15 !bottom-3;
 }
 
-.panel-paper {
-  @apply min-h-59 rounded-md shadow-md p-4 flex flex-col gap-2 border border-[rgba(0,0,0,0.15)];
-}
-
-.panel-sub-layout {
-  @apply min-h-34 grid grid-cols-[1fr_120px] gap-4 flex-col justify-between max-phones:flex;
-}
-
-.more-bubble {
-  @apply absolute -right-0 top-0 bg-primary-500 rounded-half text-white text-xl font-medium w-12 h-12 grid place-items-center max-phones:hidden;
-}
-
-.date-text {
-  @apply text-primary-500;
-}
-
-.card-error-text {
-  @apply text-base font-medium;
-}
-
 .party {
   @apply flex gap-4 items-center;
 }
@@ -261,17 +241,8 @@ th[data-sort='0'] :is(.sort-up, .sort-down) {
 
 /* ================ DARK-MODE STYLING ================= */
 body[data-theme='dark'],
-body[data-theme='dark']
-  :is(nav, .appliance-preview, .MuiBox-root, .MuiTableCell-root, .MuiList-root, .MuiPaper-root) {
+body[data-theme='dark'] :is(nav, .MuiBox-root, .MuiTableCell-root, .MuiList-root, .MuiPaper-root) {
   @apply bg-primary-dark text-white;
-}
-
-body[data-theme='dark'] .info-container .sub-heading {
-  @apply text-[rgba(255,255,255,0.5)];
-}
-
-body[data-theme='dark'] :is(.register-text, .leaderboard-info-text) {
-  @apply !text-[rgba(255,255,255,0.65)];
 }
 
 body[data-theme='dark'] .nav-links {
@@ -285,10 +256,8 @@ body[data-theme='dark']
     .MuiChip-label,
     .MuiSelect-select,
     .MuiFormLabel-root,
-    .register-text > em,
     .MuiSvgIcon-root path,
     .MuiOutlinedInput-root,
-    .info-container .heading,
     .MuiTablePagination-selectLabel,
     .MuiTablePagination-displayedRows,
 
@@ -337,10 +306,6 @@ body[data-theme='dark']
 
 body[data-theme='dark'] .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline {
   @apply border-[rgba(255,255,255,0.3)];
-}
-
-body[data-theme='dark'] .chart-control-btn.Mui-disabled path {
-  @apply text-[rgba(107,114,128,1)];
 }
 
 body[data-theme='dark'] .banner {

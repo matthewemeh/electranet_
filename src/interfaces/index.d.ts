@@ -64,6 +64,11 @@ interface Election {
   delimitationCode: string;
 }
 
+interface VotedElection {
+  election: string;
+  createdAt: string;
+}
+
 interface Notification_ {
   _id: string;
   message: string;

@@ -146,15 +146,13 @@ const Users = () => {
       <EmptyList
         emptyText='No users found'
         addComponent={
-          isFiltersOn ? (
+          isFiltersOn && (
             <div className='flex items-center gap-2'>
               Empty filtered results?
               <Button variant='contained' startIcon={<Refresh />} onClick={() => setFilters({})}>
                 Reset Filters
               </Button>
             </div>
-          ) : (
-            <></>
           )
         }
       />

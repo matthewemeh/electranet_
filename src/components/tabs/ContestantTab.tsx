@@ -189,16 +189,18 @@ const ContestantTab: React.FC<Props> = ({
           <TableCell role='cell' style={{ minWidth: 10 }}>
             <Tooltip
               title={
-                election.hasStarted
-                  ? 'Cannot add contestant to commenced election'
-                  : `${isAddLoading ? 'Adding' : 'Add'} Contestant to ${election.name}`
+                contestant.party
+                  ? election.hasStarted
+                    ? 'Cannot add contestant to commenced election'
+                    : `${isAddLoading ? 'Adding' : 'Add'} Contestant to ${election.name}`
+                  : 'Assign Contestant to a party before adding to Election'
               }
             >
               <span>
                 <IconButton
                   aria-label='add'
                   onClick={handleAddContestant}
-                  disabled={election.hasStarted || isAddLoading}
+                  disabled={!contestant.party || election.hasStarted || isAddLoading}
                 >
                   <PersonAdd />
                 </IconButton>

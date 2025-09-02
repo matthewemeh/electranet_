@@ -40,6 +40,7 @@ const Navbar = () => {
     USERS,
     TOKENS,
     PARTIES,
+    RESULTS,
     ELECTIONS,
     DASHBOARD,
     CONTESTANTS,
@@ -68,6 +69,11 @@ const Navbar = () => {
       text: role === 'USER' ? 'My Elections' : 'Elections',
       url: ELECTIONS.FETCH,
       urlRegex: new RegExp(`^${ELECTIONS.FETCH}`),
+    },
+    {
+      text: 'Results',
+      url: RESULTS.FETCH,
+      urlRegex: new RegExp(`^${RESULTS.FETCH}`),
     },
     {
       text: 'Contestants',

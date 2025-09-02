@@ -8,6 +8,7 @@ const {
   ELECTIONS,
   GET_USER_ELECTIONS,
   ADD_ELECTION_CONTESTANT,
+  GET_USER_VOTED_ELECTIONS,
   REMOVE_ELECTION_CONTESTANT,
 } = Endpoints;
 
@@ -21,6 +22,9 @@ const electionApi = createApi({
     getUserElections: builder.query<PaginatedResponse<Election>, GetUserElectionsPayload>({
       query: ({ params }) => ({ params, method: 'GET', url: GET_USER_ELECTIONS }),
       providesTags: ['Elections'],
+    }),
+    getUserVotedElections: builder.query<VotedElectionsResponse, void>({
+      query: () => ({ method: 'GET', url: GET_USER_VOTED_ELECTIONS }),
     }),
     getElections: builder.query<PaginatedResponse<Election>, GetElectionsPayload>({
       query: ({ params }) => ({ params, method: 'GET', url: ELECTIONS }),
@@ -63,6 +67,7 @@ export const {
   useGetUserElectionsQuery,
   useUpdateElectionMutation,
   useDeleteElectionMutation,
+  useGetUserVotedElectionsQuery,
   useAddElectionContestantMutation,
   useRemoveElectionContestantMutation,
 } = electionApi;

@@ -16,9 +16,11 @@ import {
 } from '@mui/material';
 
 import { isEmptyObject } from '../../utils';
-import { PATHS } from '../../routes/PathConstants';
-import { useGetUserElectionsQuery } from '../../services/apis/electionApi';
 import { useHandleReduxQueryError } from '../../hooks/useHandleReduxQuery';
+import {
+  useGetUserElectionsQuery,
+  useGetUserVotedElectionsQuery,
+} from '../../services/apis/electionApi';
 import {
   EmptyList,
   InfoButton,
@@ -61,11 +63,11 @@ const Elections = () => {
   const [filterAlertOpen, setFilterAlertOpen] = useState(false);
   const [filters, setFilters] = useState<GetElectionsPayload['params']>({});
   const {
-    refetch,
-    data: getData,
-    error: getError,
-    isError: isGetError,
-    isLoading: isGetLoading,
+    data: getElectionsData,
+    error: getElectionsError,
+    refetch: refetchElections,
+    isError: isGetElectionsError,
+    isLoading: isGetElectionsLoading,
   } = useGetUserElectionsQuery({
     params: {
       page,
@@ -75,6 +77,17 @@ const Elections = () => {
       ...queryParams,
     },
   });
+  const {
+    data: getVotedElectionsData,
+    error: getVotedElectionsError,
+    refetch: refetchVotedElections,
+    isError: isGetVotedElectionsError,
+    isLoading: isGetVotedElectionsLoading,
+  } = useGetUserVotedElectionsQuery();
+
+  const hasVoted = (electionID: string) => {
+    return getVotedElectionsData?.data.some(({ election }) => election === electionID);
+  };
 
   const handleRowsPerPageChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -138,15 +151,23 @@ const Elections = () => {
     }
   }, [filters]);
 
-  useHandleReduxQueryError({ isError: isGetError, error: getError, refetch });
+  useHandleReduxQueryError({
+    error: getElectionsError,
+    refetch: refetchElections,
+    isError: isGetElectionsError,
+  });
 
-  if (isGetLoading) {
+  useHandleReduxQueryError({
+    error: getVotedElectionsError,
+    refetch: refetchVotedElections,
+    isError: isGetVotedElectionsError,
+  });
+
+  if (isGetElectionsLoading || isGetVotedElectionsLoading) {
     return <LoadingPaper />;
-  } else if (!getData || getData.data.totalDocs === 0) {
+  } else if (!getVotedElectionsData || !getElectionsData || getElectionsData.data.totalDocs === 0) {
     return (
       <EmptyList
-        url={PATHS.ELECTIONS.ADD}
-        addText='Add new election'
         emptyText='No elections found'
         addComponent={
           isFiltersOn && (
@@ -169,7 +190,7 @@ const Elections = () => {
           <TableHead>
             <TableRow role='row'>
               {columns.map(({ id, label, align, minWidth, maxWidth }) => {
-                const isSortDisabled = isGetLoading;
+                const isSortDisabled = isGetElectionsLoading;
 
                 return (
                   <TableCell
@@ -197,8 +218,13 @@ const Elections = () => {
           </TableHead>
 
           <TableBody>
-            {getData.data.docs.map(election => (
-              <UserElectionTab columns={columns} key={election._id} election={election} />
+            {getElectionsData.data.docs.map(election => (
+              <UserElectionTab
+                columns={columns}
+                key={election._id}
+                election={election}
+                hasVoted={hasVoted(election._id)}
+              />
             ))}
           </TableBody>
         </Table>
@@ -217,10 +243,10 @@ const Elections = () => {
       <TablePagination
         component='div'
         rowsPerPage={rowsPerPage}
-        page={getData.data.page - 1}
-        count={getData.data.totalDocs}
         onPageChange={handlePageChange}
         rowsPerPageOptions={[10, 25, 50]}
+        page={getElectionsData.data.page - 1}
+        count={getElectionsData.data.totalDocs}
         ActionsComponent={TablePaginationActions}
         onRowsPerPageChange={handleRowsPerPageChange}
       />
