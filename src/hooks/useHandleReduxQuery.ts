@@ -40,9 +40,9 @@ export const useHandleReduxQueryError = ({
     refreshTokens,
     {
       data: refreshData,
-      isSuccess: isRefreshSuccess,
-      isError: isRefreshError,
       error: refreshError,
+      isError: isRefreshError,
+      isSuccess: isRefreshSuccess,
     },
   ] = useLazyRefreshTokensQuery();
 

@@ -274,6 +274,28 @@ const Election = () => {
   useHandleReduxQueryError({
     error: castVoteError,
     isError: isCastVoteError,
+    onError: () => {
+      if (isCastVoteError && castVoteError && 'status' in castVoteError) {
+        const { data } = castVoteError;
+
+        if (data && typeof data === 'object' && !Array.isArray(data)) {
+          const { errorCode } = data as BaseErrorResponse;
+
+          switch (errorCode) {
+            case 'E009':
+              // vote token expired
+              addVoteToken();
+              break;
+
+            case 'E010':
+              // double voting attempt
+              releaseWebcam();
+              goBack();
+              break;
+          }
+        }
+      }
+    },
     refetch: () => {
       if (castVoteOriginalArgs) castVote(castVoteOriginalArgs);
     },
@@ -322,6 +344,9 @@ const Election = () => {
       setModelsLoaded(true);
     };
     loadModels();
+
+    // release webcam on component unmount
+    return releaseWebcam;
   }, []);
 
   useEffect(() => {

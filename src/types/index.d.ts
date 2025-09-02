@@ -26,13 +26,25 @@ type MinifiedContestant = Omit<
  * - `'E001'`: Indicates that user session has expired.
  * - `'E002'`: Indicates that refresh token has expired.
  * - `'E003'`: Indicates that Authorization was missing in latest request headers.
- * - `'E004'`: Indicates that `refreshToken` field was empty (or missing) in lastest logout request body.
- * - `'E005'`: Indicates that `refreshToken` was provided in lastest logout request body but is invalid (not found in database).
+ * - `'E004'`: Indicates that `refreshToken` field was empty (or missing) in latest logout request body.
+ * - `'E005'`: Indicates that `refreshToken` was provided in latest logout request body but is invalid (not found in database).
  * - `'E006'`: Indicates an attempt to register a duplicate user.
  * - `'E007'`: Indicates a failed super admin registration.
- * - `'E008'`: Indicates an invalid or expired Vote Token was used to cast a vote.
+ * - `'E008'`: Indicates an invalid Vote Token was used to cast a vote.
+ * - `'E009'`: Indicates an expired Vote Token was used to cast a vote.
+ * - `'E010'`: Indicates a double (duplicate) vote attempt by a user.
  *
  * @remarks
  * Use this type to strongly type error codes and provide context-specific error handling.
  */
-type ErrorCode = 'E001' | 'E002' | 'E003' | 'E004' | 'E005' | 'E006' | 'E007' | 'E008';
+type ErrorCode =
+  | 'E001'
+  | 'E002'
+  | 'E003'
+  | 'E004'
+  | 'E005'
+  | 'E006'
+  | 'E007'
+  | 'E008'
+  | 'E009'
+  | 'E010';

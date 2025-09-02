@@ -41,14 +41,16 @@ const RegisterPassword = () => {
     isError,
     onError: () => {
       if (isError && error && 'status' in error) {
-        if (error.data) {
-          if (typeof error.data === 'object' && !Array.isArray(error.data)) {
-            const { errorCode } = error.data as BaseErrorResponse;
+        const { data } = error;
 
-            if (errorCode === 'E006') {
+        if (data && typeof data === 'object' && !Array.isArray(data)) {
+          const { errorCode } = data as BaseErrorResponse;
+
+          switch (errorCode) {
+            case 'E006':
               // user already exists on platform
               navigate(LOGIN);
-            }
+              break;
           }
         }
       }
