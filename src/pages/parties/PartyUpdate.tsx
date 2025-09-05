@@ -1,11 +1,12 @@
+import { isEmpty } from 'lodash';
 import { FaUserEdit } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { Button, TextField } from '@mui/material';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import constants from '../../constants';
+import { showAlert } from '../../utils';
 import { PATHS } from '../../routes/PathConstants';
-import { isEmptyObject, showAlert } from '../../utils';
 import { BackButton, FileUploadInput } from '../../components';
 import { useUpdatePartyMutation } from '../../services/apis/partyApi';
 import {
@@ -82,7 +83,7 @@ const PartyUpdate = () => {
     e.preventDefault();
 
     const { id, ...mainPayload } = payload;
-    if (isEmptyObject(mainPayload)) {
+    if (isEmpty(mainPayload)) {
       return showAlert({ msg: 'You have not made any changes', duration: 5000 });
     }
 

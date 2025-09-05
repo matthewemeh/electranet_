@@ -1,13 +1,12 @@
 import { isEmpty } from 'lodash';
-import { Add } from '@mui/icons-material';
-import { useMemo, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Refresh } from '@mui/icons-material';
+import { useSearchParams } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
 import { IoIosArrowRoundUp, IoIosArrowRoundDown } from 'react-icons/io';
 import {
-  Fab,
   Paper,
   Table,
-  Tooltip,
+  Button,
   TableRow,
   TableBody,
   TableCell,
@@ -17,34 +16,37 @@ import {
   type TableCellProps,
 } from '@mui/material';
 
-import { PATHS } from '../../routes/PathConstants';
-import { useGetPartiesQuery } from '../../services/apis/partyApi';
+import { useGetResultsQuery } from '../../services/apis/resultApi';
 import { useHandleReduxQueryError } from '../../hooks/useHandleReduxQuery';
 import {
-  PartyTab,
   EmptyList,
-  InfoButton,
-  AlertDialog,
+  ResultTab,
   LoadingPaper,
+  FilterButton,
+  ResultFilters,
   TablePaginationActions,
 } from '../../components';
 
 export interface Column extends TableCellProps {
   label: string;
-  id: keyof Party;
   maxWidth?: number;
   minWidth?: number;
+  id: keyof ResultData;
   format?: (value: number) => string;
 }
 
-const Parties = () => {
+const Results = () => {
   const columns: readonly Column[] = [
-    { id: 'logoUrl', label: '', maxWidth: 50 },
-    { id: 'shortName', label: 'Party Alias', minWidth: 10 },
-    { id: 'longName', label: 'Party Name', minWidth: 170 },
+    { id: 'election', label: 'Election Name', maxWidth: 170 },
+    { id: 'updatedAt', label: 'Last updated at', minWidth: 50 },
+    {
+      minWidth: 100,
+      id: 'totalVotes',
+      label: 'Total Votes',
+      format: (value: number) => value.toLocaleString(),
+    },
   ];
 
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const queryParams = useMemo(() => {
@@ -56,21 +58,23 @@ const Parties = () => {
   }, [searchParams]);
 
   const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sortBy, setSortBy] = useState({});
-  const [alertOpen, setAlertOpen] = useState(false);
-  const [selectedParty, setSelectedParty] = useState<Party | null>(null);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [isFiltersOn, setIsFiltersOn] = useState(false);
+  const [filterAlertOpen, setFilterAlertOpen] = useState(false);
+  const [filters, setFilters] = useState<GetResultsPayload['params']>({});
   const {
     refetch,
     data: getData,
     error: getError,
     isError: isGetError,
     isLoading: isGetLoading,
-  } = useGetPartiesQuery({
+  } = useGetResultsQuery({
     params: {
       page,
       limit: rowsPerPage,
-      sortBy: JSON.stringify(isEmpty(sortBy) ? { longName: 1 } : sortBy),
+      sortBy: JSON.stringify(isEmpty(sortBy) ? { createdAt: -1 } : sortBy),
+      ...filters,
       ...queryParams,
     },
   });
@@ -87,38 +91,7 @@ const Parties = () => {
     setPage(newPage + 1);
   };
 
-  const handleInfoClick = (party: Party) => {
-    setSelectedParty(party);
-    setAlertOpen(true);
-  };
-
-  const paginatedData = useMemo(() => {
-    return getData as PaginatedResponse<Party> | undefined;
-  }, [getData]);
-
-  const dialogContent: React.ReactNode = useMemo(() => {
-    if (!selectedParty) return <></>;
-
-    const { logoUrl, longName, shortName, motto } = selectedParty;
-
-    return (
-      <div className='grid grid-cols-[40%_60%] gap-2'>
-        <p className='card-info__tag'>Party Name</p>
-        <p className='card-info__text capitalize'>{longName}</p>
-
-        <p className='card-info__tag'>Party Alias</p>
-        <p className='card-info__text capitalize'>{shortName}</p>
-
-        <p className='card-info__tag'>Party Motto</p>
-        <p className='card-info__text capitalize'>{motto ?? 'Unavailable'}</p>
-
-        <p className='card-info__tag'>Party Logo</p>
-        <div className='card-info__text capitalize'>
-          <img src={logoUrl} alt={longName} className='party__img !rounded' />
-        </div>
-      </div>
-    );
-  }, [selectedParty]);
+  const handleFilterClick = () => setFilterAlertOpen(true);
 
   const handleSortClick = (id: Column['id'], isSortDisabled: boolean) => {
     return (e: React.MouseEvent<HTMLTableCellElement>) => {
@@ -156,24 +129,48 @@ const Parties = () => {
     };
   };
 
+  useEffect(() => {
+    setPage(1);
+    if (isEmpty(filters as object)) {
+      setIsFiltersOn(false);
+    } else {
+      setIsFiltersOn(true);
+
+      // clear any existing search params
+      if (searchParams.size > 0) setSearchParams({});
+    }
+  }, [filters]);
+
   useHandleReduxQueryError({ isError: isGetError, error: getError, refetch });
 
   if (isGetLoading) {
     return <LoadingPaper />;
-  } else if (!paginatedData || paginatedData.data.totalDocs === 0) {
+  } else if (!getData || getData.data.totalDocs === 0) {
     return (
-      <EmptyList url={PATHS.PARTIES.ADD} addText='Add new party' emptyText='No parties found' />
+      <EmptyList
+        emptyText='No results found'
+        addComponent={
+          isFiltersOn && (
+            <div className='flex items-center gap-2'>
+              Empty filtered results?
+              <Button variant='contained' startIcon={<Refresh />} onClick={() => setFilters({})}>
+                Reset Filters
+              </Button>
+            </div>
+          )
+        }
+      />
     );
   }
 
   return (
     <Paper className='table-wrapper'>
       <TableContainer className='rounded-3xl'>
-        <Table stickyHeader aria-label='parties' className='relative'>
+        <Table stickyHeader aria-label='results' className='relative'>
           <TableHead>
             <TableRow role='row'>
               {columns.map(({ id, label, align, minWidth, maxWidth }) => {
-                const isSortDisabled = id === 'logoUrl' || isGetLoading;
+                const isSortDisabled = id === 'election' || id === 'totalVotes' || isGetLoading;
 
                 return (
                   <TableCell
@@ -191,60 +188,38 @@ const Parties = () => {
                   </TableCell>
                 );
               })}
-              <TableCell role='columnheader' style={{ minWidth: 10 }} />
-              <TableCell role='columnheader' style={{ minWidth: 10 }} />
+              <TableCell role='columnheader' style={{ minWidth: 10, maxWidth: 120 }} />
             </TableRow>
           </TableHead>
 
           <TableBody>
-            {paginatedData.data.docs.map(party => (
-              <PartyTab
-                party={party}
-                key={party._id}
-                columns={columns}
-                onInfoClick={party => handleInfoClick(party)}
-              />
+            {getData.data.docs.map(result => (
+              <ResultTab columns={columns} key={result._id} result={result} />
             ))}
           </TableBody>
         </Table>
       </TableContainer>
 
-      <InfoButton title="Parties' information takes about 5 minutes to reflect any changes you make" />
+      <FilterButton
+        isFiltersOn={isFiltersOn}
+        onClick={handleFilterClick}
+        extraContainerClass='!left-5'
+      />
+
+      <ResultFilters open={filterAlertOpen} setFilters={setFilters} setOpen={setFilterAlertOpen} />
 
       <TablePagination
         component='div'
         rowsPerPage={rowsPerPage}
+        page={getData.data.page - 1}
+        count={getData.data.totalDocs}
         onPageChange={handlePageChange}
         rowsPerPageOptions={[10, 25, 50]}
-        page={paginatedData.data.page - 1}
-        count={paginatedData.data.totalDocs}
         ActionsComponent={TablePaginationActions}
         onRowsPerPageChange={handleRowsPerPageChange}
       />
-
-      <AlertDialog
-        affirmationOnly
-        open={alertOpen}
-        setOpen={setAlertOpen}
-        affirmativeText='Close'
-        dialogTitle='Party Details'
-        dialogContent={dialogContent}
-      />
-
-      <Tooltip
-        title='Add more parties'
-        className={`add-fab ${paginatedData.data.totalDocs === 0 && '!hidden'}`}
-      >
-        <Fab
-          color='primary'
-          aria-label='add more parties'
-          onClick={() => navigate(PATHS.PARTIES.ADD)}
-        >
-          <Add />
-        </Fab>
-      </Tooltip>
     </Paper>
   );
 };
 
-export default Parties;
+export default Results;

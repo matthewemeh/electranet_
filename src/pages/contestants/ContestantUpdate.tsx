@@ -1,11 +1,12 @@
+import { isEmpty } from 'lodash';
 import { FaUserEdit } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, TextField, type SelectChangeEvent } from '@mui/material';
 
 import constants from '../../constants';
+import { showAlert } from '../../utils';
 import { PATHS } from '../../routes/PathConstants';
-import { isEmptyObject, showAlert } from '../../utils';
 import { useGetPartiesQuery } from '../../services/apis/partyApi';
 import { BackButton, DropdownInput, FileUploadInput } from '../../components';
 import { useUpdateContestantMutation } from '../../services/apis/contestantApi';
@@ -95,7 +96,7 @@ const ContestantUpdate = () => {
     e.preventDefault();
 
     const { id, ...mainPayload } = payload;
-    if (isEmptyObject(mainPayload)) {
+    if (isEmpty(mainPayload)) {
       return showAlert({ msg: 'You have not made any changes', duration: 5000 });
     }
 

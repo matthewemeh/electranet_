@@ -11,14 +11,14 @@ type Gender = 'MALE' | 'FEMALE';
 
 type AdminTokenStatus = 'REVOKED' | 'ACTIVE';
 
-type MinifiedElection = Omit<Election, Exclude<keyof Election, 'name' | 'delimitationCode'>>;
+type MinifiedElection = Omit<
+  Election,
+  Exclude<keyof Election, 'name' | 'delimitationCode' | '_id'>
+>;
 
 type MinifiedParty = Omit<Party, 'motto' | 'createdAt' | 'updatedAt'>;
 
-type MinifiedContestant = Omit<
-  Contestant,
-  Exclude<keyof Contestant, 'lastName' | 'firstName' | 'profileImageUrl'>
->;
+type MinifiedContestant = Omit<Contestant, 'party' | 'isDeleted' | 'createdAt' | 'updatedAt'>;
 
 /**
  * Represents specific error codes used throughout the application.

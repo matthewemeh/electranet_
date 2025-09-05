@@ -107,15 +107,22 @@ interface Contestant {
   profileImageUrl: string;
 }
 
-interface Result {
+interface Result extends Omit<MongoProps, '__v'> {
   party: Party;
   votes: number;
   contestants: MinifiedContestant[];
 }
 
+interface ResultData extends Omit<MongoProps, '__v' | 'createdAt'> {
+  totalVotes: number;
+  election: MinifiedElection;
+  results: { votes: number }[];
+}
+
 interface Vote {
   _id: string;
   hash: string;
+  index: string;
   timestamp: string;
 }
 

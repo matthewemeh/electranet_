@@ -50,7 +50,8 @@ interface ResultResponse extends BaseResponse {
     createdAt: string;
     updatedAt: string;
     results: Result[];
-    election: MinifiedElection;
+    totalVotes: number;
+    election: Omit<MinifiedElection, '_id'>;
   };
 }
 

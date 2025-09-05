@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { IoIosArrowRoundUp, IoIosArrowRoundDown } from 'react-icons/io';
@@ -13,7 +14,6 @@ import {
   type TableCellProps,
 } from '@mui/material';
 
-import { isEmptyObject } from '../../utils';
 import { useGetTokensQuery } from '../../services/apis/userApi';
 import { useHandleReduxQueryError } from '../../hooks/useHandleReduxQuery';
 import {
@@ -63,7 +63,7 @@ const Tokens = () => {
     params: {
       page,
       limit: rowsPerPage,
-      sortBy: JSON.stringify(isEmptyObject(sortBy) ? { createdAt: -1 } : sortBy),
+      sortBy: JSON.stringify(isEmpty(sortBy) ? { createdAt: -1 } : sortBy),
       ...queryParams,
     },
   });

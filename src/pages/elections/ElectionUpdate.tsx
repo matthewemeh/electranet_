@@ -1,12 +1,13 @@
 import moment from 'moment';
+import { isEmpty } from 'lodash';
 import { FaUserEdit } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import { Button, TextField, type SelectChangeEvent } from '@mui/material';
 
 import { PATHS } from '../../routes/PathConstants';
+import { generateTimeSlots, showAlert } from '../../utils';
 import { BackButton, DatePicker, DropdownInput } from '../../components';
-import { generateTimeSlots, isEmptyObject, showAlert } from '../../utils';
 import { useUpdateElectionMutation } from '../../services/apis/electionApi';
 import {
   useHandleReduxQueryError,
@@ -71,7 +72,7 @@ const ElectionUpdate = () => {
     e.preventDefault();
 
     const { id, ...mainPayload } = payload;
-    if (isEmptyObject(mainPayload)) {
+    if (isEmpty(mainPayload)) {
       return showAlert({ msg: 'You have not made any changes', duration: 5000 });
     }
 

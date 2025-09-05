@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { groupBy } from 'lodash';
 import { LiaVoteYeaSolid } from 'react-icons/lia';
 import { useEffect, useMemo, useState } from 'react';
@@ -361,6 +362,23 @@ const Election = () => {
 
   return (
     <main className='pb-10'>
+      <header className='mb-5 text-xl'>
+        <h1>
+          Election Name: <span className='font-semibold'>{electionToVote.name}</span>
+        </h1>
+        <p>
+          Started at:&nbsp;
+          <span className='font-semibold'>
+            {moment(electionToVote.startTime).format('LLL')}&nbsp;
+            {electionToVote.hasStarted && '(ongoing)'}
+          </span>
+        </p>
+        <p>
+          Ends at:&nbsp;
+          <span className='font-semibold'>{moment(electionToVote.endTime).format('LLL')}</span>
+        </p>
+      </header>
+
       <div className='flex flex-col gap-10'>
         {Object.entries(groupedContestants).map(([partyID, contestants]) => (
           <section

@@ -29,7 +29,6 @@ const UserElectionTab: React.FC<Props> = ({ election, columns, hasVoted }) => {
   };
 
   const navigateElectionResultPage = () => {
-    sessionStorage.setItem('election', JSON.stringify(election));
     navigate(PATHS.RESULTS.RESULT.replace(':id', election._id));
   };
 
@@ -83,19 +82,19 @@ const UserElectionTab: React.FC<Props> = ({ election, columns, hasVoted }) => {
         <Tooltip
           title={
             election.hasStarted
-              ? 'Check Election Results'
+              ? 'Check Election Result'
               : `Election starts ${moment(election.startTime).fromNow()} from now`
           }
         >
           <span>
             <Button
               variant='outlined'
-              aria-label='check results'
+              aria-label='check result'
               className='cursor-pointer'
               disabled={!election.hasStarted}
               onClick={navigateElectionResultPage}
             >
-              Results
+              Result
             </Button>
           </span>
         </Tooltip>

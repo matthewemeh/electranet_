@@ -2,6 +2,8 @@ type PaginationParameters = 'page' | 'limit';
 
 type SortParameters = 'sortBy';
 
+type TimeParameters = 'startTime' | 'endTime';
+
 type GetContestantsParameters =
   | PaginationParameters
   | SortParameters
@@ -11,9 +13,9 @@ type GetContestantsParameters =
   | 'firstName'
   | 'isDeleted';
 
-type GetUserElectionsParameters = PaginationParameters | 'endTime' | 'startTime';
+type GetUserElectionsParameters = PaginationParameters | SortParameters | TimeParameters;
 
-type GetElectionsParameters = GetUserElectionsParameters | SortParameters | 'delimitationCode';
+type GetElectionsParameters = GetUserElectionsParameters | 'delimitationCode';
 
 type GetPartiesParameters = PaginationParameters | SortParameters;
 
@@ -30,6 +32,8 @@ type GetVotesParameters = PaginationParameters | SortParameters;
 
 type GetTokensParameters = PaginationParameters | SortParameters;
 
-type GetLogsParameters = PaginationParameters | SortParameters | 'startTime' | 'endTime';
+type GetLogsParameters = PaginationParameters | SortParameters | TimeParameters;
 
-type GetNotificationsParameters = GetLogsParameters;
+type GetResultsParameters = PaginationParameters | SortParameters | TimeParameters;
+
+type GetNotificationsParameters = PaginationParameters | SortParameters | TimeParameters;

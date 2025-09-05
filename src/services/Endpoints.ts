@@ -51,7 +51,10 @@ export default {
   },
   LOGS: '/logs',
   SEND_OTP: '/otp/send',
-  RESULT: '/results/:id',
+  RESULTS: {
+    FETCH: '/results',
+    RESULT: '/results/:id',
+  },
   NOTIFICATIONS: '/notifications',
   BASE_URL: isDevMode() ? 'http://localhost:3000/v1' : import.meta.env.VITE_ELECTRANET_API_URL,
 };

@@ -8,33 +8,15 @@ import DatePicker from '../inputs/DatePicker';
 interface Props {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setFilters: React.Dispatch<React.SetStateAction<GetElectionsPayload['params']>>;
+  setFilters: React.Dispatch<React.SetStateAction<GetResultsPayload['params']>>;
 }
 
-const ElectionFilters: React.FC<Props> = ({ setFilters, open, setOpen }) => {
+const ResultFilters: React.FC<Props> = ({ setFilters, open, setOpen }) => {
   const [toDate, setToDate] = useState<Date>();
   const [fromDate, setFromDate] = useState<Date>();
   const [toDatePickerVisible, setToDatePickerVisible] = useState(false);
   const [fromDatePickerVisible, setFromDatePickerVisible] = useState(false);
-  const [newFilters, setNewFilters] = useState<GetElectionsPayload['params']>({});
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.currentTarget;
-
-    // `delimitationCode` is allowed to be an empty string
-    if (!value.length && name !== 'delimitationCode') {
-      setNewFilters(prev => {
-        const oldFilters = { ...prev };
-        //@ts-ignore
-        delete oldFilters[name];
-
-        return oldFilters;
-      });
-      return;
-    }
-
-    setNewFilters(prev => ({ ...prev, [name]: value }));
-  };
+  const [newFilters, setNewFilters] = useState<GetResultsPayload['params']>({});
 
   const handleNegation = () => {
     setFilters({});
@@ -49,21 +31,11 @@ const ElectionFilters: React.FC<Props> = ({ setFilters, open, setOpen }) => {
       setOpen={setOpen}
       negationText='Clear'
       affirmativeText='Confirm'
-      dialogTitle='Election Filters'
       onNegated={handleNegation}
+      dialogTitle='Result Filters'
       onAffirmed={() => setFilters(newFilters)}
       dialogContent={
         <form className='form mt-4 !mb-0'>
-          <TextField
-            type='text'
-            id='delimitationCode'
-            name='delimitationCode'
-            label='Delimitation Code'
-            className='form-field'
-            onChange={handleChange}
-            value={newFilters?.delimitationCode || ''}
-          />
-
           <TextField
             type='text'
             id='fromDate'
@@ -105,4 +77,4 @@ const ElectionFilters: React.FC<Props> = ({ setFilters, open, setOpen }) => {
   );
 };
 
-export default ElectionFilters;
+export default ResultFilters;

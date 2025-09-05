@@ -74,10 +74,6 @@ export const updateFormData = (formData: FormData) => {
   };
 };
 
-export const isEmptyObject = (obj: object): boolean => {
-  return Object.keys(obj).length === 0 && obj.constructor === Object;
-};
-
 export const generateTimeSlots = (spacingMinutes: number): string[] => {
   const slots: string[] = [];
   const maxMinutes = 23 * 60 + 59; // 23:59 in minutes

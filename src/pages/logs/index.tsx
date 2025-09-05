@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { Refresh } from '@mui/icons-material';
 import { useSearchParams } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
@@ -15,7 +16,6 @@ import {
   type TableCellProps,
 } from '@mui/material';
 
-import { isEmptyObject } from '../../utils';
 import { useGetLogsQuery } from '../../services/apis/logApi';
 import { useHandleReduxQueryError } from '../../hooks/useHandleReduxQuery';
 import {
@@ -73,7 +73,7 @@ const Logs = () => {
     params: {
       page,
       limit: rowsPerPage,
-      sortBy: JSON.stringify(isEmptyObject(sortBy) ? { createdAt: -1 } : sortBy),
+      sortBy: JSON.stringify(isEmpty(sortBy) ? { createdAt: -1 } : sortBy),
       ...filters,
       ...queryParams,
     },
@@ -100,7 +100,7 @@ const Logs = () => {
 
   useEffect(() => {
     setPage(1);
-    if (isEmptyObject(filters as object)) {
+    if (isEmpty(filters as object)) {
       setIsFiltersOn(false);
     } else {
       setIsFiltersOn(true);

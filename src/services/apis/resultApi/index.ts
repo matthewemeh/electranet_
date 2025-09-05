@@ -3,22 +3,27 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import Endpoints from '../../Endpoints';
 import { baseQuery } from '../../../config/reduxjs.config';
 
-const { RESULT } = Endpoints;
+const { RESULTS } = Endpoints;
 
 // create the createApi
 const ResultApi = createApi({
   baseQuery,
-  tagTypes: ['Results'],
+  keepUnusedDataFor: 0,
   reducerPath: 'resultApi',
+  tagTypes: ['Results', 'Result'],
   refetchOnReconnect: true,
   endpoints: builder => ({
-    getResults: builder.query<PaginatedResponse<Result>, string>({
-      query: electionID => ({ method: 'GET', url: RESULT.replace(':id', electionID) }),
+    getResults: builder.query<PaginatedResponse<ResultData>, GetResultsPayload>({
+      query: ({ params }) => ({ params, method: 'GET', url: RESULTS.FETCH }),
       providesTags: ['Results'],
+    }),
+    getResult: builder.query<ResultResponse, string>({
+      query: electionID => ({ method: 'GET', url: RESULTS.RESULT.replace(':id', electionID) }),
+      providesTags: ['Result'],
     }),
   }),
 });
 
-export const { useGetResultsQuery } = ResultApi;
+export const { useGetResultsQuery, useGetResultQuery } = ResultApi;
 
 export default ResultApi;

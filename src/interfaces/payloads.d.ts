@@ -130,7 +130,7 @@ interface VerifyVotePayload {
   voteID: string;
 }
 
-interface GetResultsPayload {
+interface GetResultPayload {
   id: string;
 }
 
@@ -143,5 +143,7 @@ type GetLogsPayload = ParameterizedPayload<GetLogsParameters>;
 type GetUsersPayload = ParameterizedPayload<GetUsersParameters>;
 
 type GetTokensPayload = ParameterizedPayload<GetTokensParameters>;
+
+type GetResultsPayload = ParameterizedPayload<GetResultsParameters>;
 
 type GetNotificationsPayload = ParameterizedPayload<GetNotificationsParameters>;

@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { isEmpty } from 'lodash';
 import { Refresh } from '@mui/icons-material';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -16,7 +17,6 @@ import {
   type TableCellProps,
 } from '@mui/material';
 
-import { isEmptyObject } from '../../utils';
 import { PATHS } from '../../routes/PathConstants';
 import { useHandleReduxQueryError } from '../../hooks/useHandleReduxQuery';
 import {
@@ -81,7 +81,7 @@ const Contestants = () => {
     params: {
       page,
       limit: rowsPerPage,
-      sortBy: JSON.stringify(isEmptyObject(sortBy) ? { lastName: 1 } : sortBy),
+      sortBy: JSON.stringify(isEmpty(sortBy) ? { lastName: 1 } : sortBy),
       ...filters,
       ...queryParams,
     },
@@ -156,7 +156,7 @@ const Contestants = () => {
 
   useEffect(() => {
     setPage(1);
-    if (isEmptyObject(filters as object)) {
+    if (isEmpty(filters as object)) {
       setIsFiltersOn(false);
     } else {
       setIsFiltersOn(true);

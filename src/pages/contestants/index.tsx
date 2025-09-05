@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Add, Refresh, VisibilityOff } from '@mui/icons-material';
@@ -17,7 +18,6 @@ import {
   type TableCellProps,
 } from '@mui/material';
 
-import { isEmptyObject } from '../../utils';
 import { PATHS } from '../../routes/PathConstants';
 import { useGetContestantsQuery } from '../../services/apis/contestantApi';
 import { useHandleReduxQueryError } from '../../hooks/useHandleReduxQuery';
@@ -78,7 +78,7 @@ const Contestants = () => {
     params: {
       page,
       limit: rowsPerPage,
-      sortBy: JSON.stringify(isEmptyObject(sortBy) ? { lastName: 1 } : sortBy),
+      sortBy: JSON.stringify(isEmpty(sortBy) ? { lastName: 1 } : sortBy),
       ...filters,
       ...queryParams,
     },
@@ -193,7 +193,7 @@ const Contestants = () => {
 
   useEffect(() => {
     setPage(1);
-    if (isEmptyObject(filters as object)) {
+    if (isEmpty(filters as object)) {
       setIsFiltersOn(false);
     } else {
       setIsFiltersOn(true);
@@ -248,9 +248,7 @@ const Contestants = () => {
                   >
                     {label}
                     <IoIosArrowRoundUp className={`sort-up ${isSortDisabled && '!hidden'}`} />
-                    <IoIosArrowRoundDown
-                      className={`sort-down ${isSortDisabled && '!hidden'}`}
-                    />
+                    <IoIosArrowRoundDown className={`sort-down ${isSortDisabled && '!hidden'}`} />
                   </TableCell>
                 );
               })}

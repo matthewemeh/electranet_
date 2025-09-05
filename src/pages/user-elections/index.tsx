@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { Refresh } from '@mui/icons-material';
 import { useSearchParams } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
@@ -15,7 +16,6 @@ import {
   type TableCellProps,
 } from '@mui/material';
 
-import { isEmptyObject } from '../../utils';
 import { useHandleReduxQueryError } from '../../hooks/useHandleReduxQuery';
 import {
   useGetUserElectionsQuery,
@@ -72,7 +72,7 @@ const Elections = () => {
     params: {
       page,
       limit: rowsPerPage,
-      sortBy: JSON.stringify(isEmptyObject(sortBy) ? { startTime: -1 } : sortBy),
+      sortBy: JSON.stringify(isEmpty(sortBy) ? { startTime: -1 } : sortBy),
       ...filters,
       ...queryParams,
     },
@@ -141,7 +141,7 @@ const Elections = () => {
 
   useEffect(() => {
     setPage(1);
-    if (isEmptyObject(filters as object)) {
+    if (isEmpty(filters as object)) {
       setIsFiltersOn(false);
     } else {
       setIsFiltersOn(true);

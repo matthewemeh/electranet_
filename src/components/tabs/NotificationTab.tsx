@@ -15,7 +15,7 @@ const NotificationTab: React.FC<Props> = ({ columns, notification }) => {
         let value: React.ReactNode;
 
         if (id === 'createdAt') {
-          value = moment(notification.createdAt).fromNow();
+          value = moment(notification.createdAt).format('lll');
         } else {
           value = notification[id] as string;
         }
