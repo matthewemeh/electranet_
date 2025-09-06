@@ -124,6 +124,7 @@ interface Vote {
   hash: string;
   index: string;
   timestamp: string;
+  isInvalid?: boolean;
 }
 
 interface AdminToken extends Omit<MongoProps, '__v'> {

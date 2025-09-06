@@ -32,7 +32,10 @@ export const PATHS = {
     FETCH: '/results',
     RESULT: '/results/:id',
   },
-  VOTES: '/votes/:id',
+  VOTES: {
+    FETCH: '/votes/:id',
+    VERIFY: '/verify-vote',
+  },
   NOTIFICATIONS: '/notifications',
   FACE_ID_REGISTER: '/face-id/register',
 } as const;

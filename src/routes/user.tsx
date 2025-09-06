@@ -5,6 +5,7 @@ import { PATHS } from './PathConstants';
 const Votes = lazy(() => import('../pages/votes'));
 const Results = lazy(() => import('../pages/results'));
 const Result = lazy(() => import('../pages/results/Result'));
+const VerifyVote = lazy(() => import('../pages/votes/VerifyVote'));
 const Notifications = lazy(() => import('../pages/notifications'));
 const UserElections = lazy(() => import('../pages/user-elections'));
 const Election = lazy(() => import('../pages/user-elections/Election'));
@@ -14,9 +15,10 @@ const { DASHBOARD, ELECTIONS, FACE_ID_REGISTER, NOTIFICATIONS, RESULTS, VOTES } 
 
 const userRoutes: RouteObject[] = [
   { path: DASHBOARD, element: <Dashboard />, index: true },
-  { path: VOTES, element: <Votes /> },
+  { path: VOTES.FETCH, element: <Votes /> },
   { path: RESULTS.FETCH, element: <Results /> },
   { path: RESULTS.RESULT, element: <Result /> },
+  { path: VOTES.VERIFY, element: <VerifyVote /> },
   { path: ELECTIONS.ELECTION, element: <Election /> },
   { path: NOTIFICATIONS, element: <Notifications /> },
   { path: ELECTIONS.FETCH, element: <UserElections /> },

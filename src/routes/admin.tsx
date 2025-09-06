@@ -24,7 +24,7 @@ const { CONTESTANTS, DASHBOARD, ELECTIONS, LOGS, NOTIFICATIONS, PARTIES, RESULTS
 const adminRoutes: RouteObject[] = [
   { path: DASHBOARD, element: <Dashboard />, index: true },
   { path: LOGS, element: <Logs /> },
-  { path: VOTES, element: <Votes /> },
+  { path: VOTES.FETCH, element: <Votes /> },
   { path: PARTIES.ADD, element: <PartyAdd /> },
   { path: PARTIES.FETCH, element: <Parties /> },
   { path: RESULTS.FETCH, element: <Results /> },

@@ -189,6 +189,7 @@ const Results = () => {
                 );
               })}
               <TableCell role='columnheader' style={{ minWidth: 10, maxWidth: 120 }} />
+              <TableCell role='columnheader' style={{ minWidth: 10, maxWidth: 120 }} />
             </TableRow>
           </TableHead>
 

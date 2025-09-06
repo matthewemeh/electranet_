@@ -512,9 +512,9 @@ const Election = () => {
             <Button
               variant='contained'
               loading={isSubmitting}
+              disabled={!isPermissionGranted}
               onClick={captureAndCompareFaces}
               className='base-btn !text-lg w-full'
-              disabled={!isPermissionGranted || isSubmitting}
             >
               Take Photo
             </Button>

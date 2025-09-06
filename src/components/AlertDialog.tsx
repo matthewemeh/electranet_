@@ -23,6 +23,7 @@ interface Props {
   open: boolean;
   dialogTitle: string;
   onClose?: () => void;
+  keepMounted?: boolean;
   negationText?: string;
   onNegated?: () => void;
   onAffirmed?: () => void;
@@ -36,8 +37,9 @@ const AlertDialog: React.FC<Props> = ({
   open,
   setOpen,
   onClose,
-  onAffirmed,
   onNegated,
+  onAffirmed,
+  keepMounted,
   dialogTitle,
   dialogContent,
   affirmationOnly,
@@ -63,6 +65,7 @@ const AlertDialog: React.FC<Props> = ({
     <Dialog
       open={open}
       onClose={handleClose}
+      keepMounted={keepMounted}
       slots={{ transition: Transition }}
       aria-describedby='alert-dialog-slide-description'
     >

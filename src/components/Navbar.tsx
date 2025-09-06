@@ -38,6 +38,7 @@ const Navbar = () => {
   const {
     LOGS,
     USERS,
+    VOTES,
     TOKENS,
     PARTIES,
     RESULTS,
@@ -75,6 +76,12 @@ const Navbar = () => {
       text: 'Results',
       url: RESULTS.FETCH,
       urlRegex: new RegExp(`^${RESULTS.RESULT}`),
+    },
+    {
+      text: 'Verify Vote',
+      url: VOTES.VERIFY,
+      urlRegex: new RegExp(`^${VOTES.VERIFY}`),
+      allowedRoles: RoleWeight.USER,
     },
     {
       text: 'Contestants',
@@ -233,7 +240,7 @@ const Navbar = () => {
             avatar={<Avatar alt={lastName} src='' />}
           />
           <div className='content'>
-            <Button size='small' variant='text' disabled={isLoading} onClick={handleLogout}>
+            <Button size='small' variant='text' loading={isLoading} onClick={handleLogout}>
               Logout
             </Button>
           </div>

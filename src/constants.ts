@@ -10,6 +10,7 @@ export default {
   },
   SUPPORTED_FORMATS: '.png, .jpeg, .jpg',
   REGEX_RULES: {
+    ID: /^[a-f0-9]{24}$/,
     PASSWORD: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,20}$/,
   },
 };

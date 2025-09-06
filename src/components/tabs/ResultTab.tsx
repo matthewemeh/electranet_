@@ -17,6 +17,10 @@ const ResultTab: React.FC<Props> = ({ result, columns }) => {
     navigate(PATHS.RESULTS.RESULT.replace(':id', result.election._id));
   };
 
+  const navigateElectionVotesPage = () => {
+    navigate(PATHS.VOTES.FETCH.replace(':id', result.election._id));
+  };
+
   return (
     <TableRow hover role='row' tabIndex={-1}>
       {columns.map(({ align, id, minWidth, maxWidth, format }) => {
@@ -36,6 +40,19 @@ const ResultTab: React.FC<Props> = ({ result, columns }) => {
           </TableCell>
         );
       })}
+
+      <TableCell role='cell' style={{ minWidth: 10, maxWidth: 120 }}>
+        <Tooltip title='View Election votes'>
+          <Button
+            variant='contained'
+            aria-label='check votes'
+            className='cursor-pointer'
+            onClick={navigateElectionVotesPage}
+          >
+            Votes
+          </Button>
+        </Tooltip>
+      </TableCell>
 
       <TableCell role='cell' style={{ minWidth: 10, maxWidth: 120 }}>
         <Tooltip title='View Election result'>
