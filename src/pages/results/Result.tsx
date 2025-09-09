@@ -71,8 +71,6 @@ const Result = () => {
     return <EmptyList emptyText='No results found' />;
   }
 
-  console.log(getResultData.data);
-
   const { election, results, totalVotes, updatedAt } = getResultData.data;
 
   return (

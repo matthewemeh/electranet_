@@ -54,6 +54,7 @@ type GetPartiesPayload = ParameterizedPayload<GetPartiesParameters>;
 
 interface RegisterFacePayload {
   image: File;
+  otp: string;
 }
 
 interface RegisterAdminPayload {

@@ -145,5 +145,5 @@ export const useHandleReduxQuerySuccess = ({
         onFailure?.();
       }
     }
-  }, [isSuccess]);
+  }, [isSuccess, response]);
 };

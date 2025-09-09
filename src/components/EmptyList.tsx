@@ -1,6 +1,6 @@
-import { Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import { AddCircleOutline } from '@mui/icons-material';
+
+import LinkButton from './buttons/LinkButton';
 
 export interface EmptyListProps {
   url?: string;
@@ -17,21 +17,15 @@ const EmptyList: React.FC<EmptyListProps> = ({
   url = '/',
   addComponent,
 }) => {
-  const navigate = useNavigate();
-
   return (
     <div className='w-full h-[calc(100dvh-100px)] flex flex-col items-center justify-center gap-5'>
       {emptyIcon}
       <p className='text-xl font-medium'>{emptyText}</p>
       {addComponent ||
         (addText && (
-          <Button
-            variant='contained'
-            startIcon={<AddCircleOutline />}
-            onClick={() => navigate(url)}
-          >
+          <LinkButton to={url} variant='contained' startIcon={<AddCircleOutline />}>
             {addText}
-          </Button>
+          </LinkButton>
         ))}
     </div>
   );

@@ -1,10 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Subject } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
 import {
   Paper,
   Table,
-  Button,
   TableRow,
   TableBody,
   TableCell,
@@ -16,8 +14,8 @@ import {
 import type { Column } from '../logs';
 import { PATHS } from '../../routes/PathConstants';
 import { useGetLogsQuery } from '../../services/apis/logApi';
-import { Loading, AlertDialog, LogTab } from '../../components';
 import { useHandleReduxQueryError } from '../../hooks/useHandleReduxQuery';
+import { Loading, AlertDialog, LogTab, LinkButton } from '../../components';
 
 const Dashboard = () => {
   const { LOGS } = PATHS;
@@ -28,12 +26,9 @@ const Dashboard = () => {
     { id: 'createdAt', label: 'Date', minWidth: 170 },
   ];
 
-  const navigate = useNavigate();
   const [alertOpen, setAlertOpen] = useState(false);
   const [selectedLog, setSelectedLog] = useState<Log>();
   const { isError, error, isLoading, data, refetch } = useGetLogsQuery({});
-
-  const goToLogsPage = () => navigate(LOGS);
 
   const handleInfoClick = (log: Log) => {
     setSelectedLog(log);
@@ -103,13 +98,9 @@ const Dashboard = () => {
                 <TableFooter className='w-full'>
                   <TableRow>
                     <TableCell colSpan={5}>
-                      <Button
-                        variant='contained'
-                        onClick={goToLogsPage}
-                        className='!block !ml-auto w-30'
-                      >
+                      <LinkButton to={LOGS} variant='contained' className='!block !ml-auto w-30'>
                         see more
-                      </Button>
+                      </LinkButton>
                     </TableCell>
                   </TableRow>
                 </TableFooter>

@@ -6,7 +6,9 @@ import { MenuRounded, MenuOpenRounded, MoreVert, Notifications } from '@mui/icon
 import Overlay from './Overlay';
 import ThemeToggle from './ThemeToggle';
 import logo from '../assets/brand/logo.png';
+import LinkButton from './buttons/LinkButton';
 import { PATHS } from '../routes/PathConstants';
+import LinkIconButton from './buttons/LinkIconButton';
 import { useAppSelector } from '../hooks/useRootStorage';
 import { useLogoutMutation } from '../services/apis/authApi';
 import { useHandleReduxQueryError, useHandleReduxQuerySuccess } from '../hooks/useHandleReduxQuery';
@@ -46,6 +48,7 @@ const Navbar = () => {
     DASHBOARD,
     CONTESTANTS,
     NOTIFICATIONS,
+    FACE_ID_REGISTER,
     AUTH: { LOGIN, REGISTER_USER },
   } = PATHS;
 
@@ -135,11 +138,14 @@ const Navbar = () => {
 
   const toggleShowMore = () => setShowMore(show => !show);
 
-  const handleNotificationsClick = () => navigate(NOTIFICATIONS);
-
   const handleLogout = async () => {
     await logout();
     navigate(LOGIN);
+  };
+
+  const handleNavLinkClick = () => {
+    toggleNav();
+    toggleShowMore();
   };
 
   useHandleReduxQueryError({ error, isError });
@@ -200,10 +206,7 @@ const Navbar = () => {
                 <Link
                   to={url}
                   key={text}
-                  onClick={() => {
-                    toggleNav();
-                    toggleShowMore();
-                  }}
+                  onClick={handleNavLinkClick}
                   className={`nav-link h-[30.7px] text-center !w-full ${
                     urlRegex.test(pathname) && 'selected'
                   }`}
@@ -219,13 +222,9 @@ const Navbar = () => {
       <ThemeToggle />
 
       <Tooltip title='Notifications'>
-        <IconButton
-          className='w-9 h-9'
-          aria-label='notifications'
-          onClick={handleNotificationsClick}
-        >
+        <LinkIconButton to={NOTIFICATIONS} className='w-9 h-9' aria-label='notifications'>
           <Notifications className='text-primary-700' />
-        </IconButton>
+        </LinkIconButton>
       </Tooltip>
 
       <Overlay visible={showMore} onClick={toggleShowMore} extraClassNames='bg-transparent' />
@@ -240,23 +239,22 @@ const Navbar = () => {
             avatar={<Avatar alt={lastName} src='' />}
           />
           <div className='content'>
-            <Button size='small' variant='text' loading={isLoading} onClick={handleLogout}>
+            <LinkButton to={FACE_ID_REGISTER} size='small'>
+              Face ID
+            </LinkButton>
+            <Button size='small' onClick={handleLogout} disabled={isLoading}>
               Logout
             </Button>
           </div>
         </div>
       ) : (
         <div className='flex gap-3'>
-          <Button
-            variant='outlined'
-            className='max-[400px]:!hidden'
-            onClick={() => navigate(REGISTER_USER)}
-          >
+          <LinkButton to={REGISTER_USER} variant='outlined' className='max-[400px]:!hidden'>
             Sign up
-          </Button>
-          <Button variant='contained' onClick={() => navigate(LOGIN)}>
+          </LinkButton>
+          <LinkButton to={LOGIN} variant='contained'>
             Login
-          </Button>
+          </LinkButton>
         </div>
       )}
     </nav>

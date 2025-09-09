@@ -1,7 +1,7 @@
 import moment from 'moment';
-import { useNavigate } from 'react-router-dom';
-import { Tooltip, TableRow, TableCell, Button } from '@mui/material';
+import { Tooltip, TableRow, TableCell } from '@mui/material';
 
+import LinkButton from '../buttons/LinkButton';
 import { type Column } from '../../pages/results';
 import { PATHS } from '../../routes/PathConstants';
 
@@ -11,15 +11,7 @@ interface Props {
 }
 
 const ResultTab: React.FC<Props> = ({ result, columns }) => {
-  const navigate = useNavigate();
-
-  const navigateElectionResultPage = () => {
-    navigate(PATHS.RESULTS.RESULT.replace(':id', result.election._id));
-  };
-
-  const navigateElectionVotesPage = () => {
-    navigate(PATHS.VOTES.FETCH.replace(':id', result.election._id));
-  };
+  const { election, totalVotes, updatedAt } = result;
 
   return (
     <TableRow hover role='row' tabIndex={-1}>
@@ -27,11 +19,11 @@ const ResultTab: React.FC<Props> = ({ result, columns }) => {
         let value: React.ReactNode;
 
         if (format) {
-          value = format(result.totalVotes);
+          value = format(totalVotes);
         } else if (id === 'election') {
-          value = result.election.name;
+          value = election.name;
         } else if (id === 'updatedAt') {
-          value = moment(result.updatedAt).format('lll');
+          value = moment(updatedAt).format('lll');
         }
 
         return (
@@ -43,27 +35,27 @@ const ResultTab: React.FC<Props> = ({ result, columns }) => {
 
       <TableCell role='cell' style={{ minWidth: 10, maxWidth: 120 }}>
         <Tooltip title='View Election votes'>
-          <Button
+          <LinkButton
             variant='contained'
             aria-label='check votes'
             className='cursor-pointer'
-            onClick={navigateElectionVotesPage}
+            to={PATHS.VOTES.FETCH.replace(':id', election._id)}
           >
             Votes
-          </Button>
+          </LinkButton>
         </Tooltip>
       </TableCell>
 
       <TableCell role='cell' style={{ minWidth: 10, maxWidth: 120 }}>
         <Tooltip title='View Election result'>
-          <Button
+          <LinkButton
             variant='outlined'
             aria-label='check result'
             className='cursor-pointer'
-            onClick={navigateElectionResultPage}
+            to={PATHS.RESULTS.RESULT.replace(':id', election._id)}
           >
             Result
-          </Button>
+          </LinkButton>
         </Tooltip>
       </TableCell>
     </TableRow>

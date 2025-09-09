@@ -156,7 +156,7 @@ input[type='checkbox'] {
 }
 
 .dropdown .content {
-  @apply absolute bg-white border text-center flex flex-col gap-4 shadow-md w-fit min-w-full top-[calc(100%+5px)] rounded-b-md opacity-0 invisible duration-300;
+  @apply absolute bg-white border text-center flex flex-col gap-1 shadow-md w-fit min-w-full top-[calc(100%+5px)] rounded-b-md opacity-0 invisible duration-300;
 }
 
 .dropdown:focus-within .content {

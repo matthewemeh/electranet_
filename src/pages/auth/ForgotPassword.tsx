@@ -1,9 +1,10 @@
 import { Formik } from 'formik';
 import { object, string } from 'yup';
+import { Link } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
 import { Button, TextField } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
 
+import { LinkButton } from '../../components';
 import { PATHS } from '../../routes/PathConstants';
 import { useAppDispatch } from '../../hooks/useRootStorage';
 import { useForgotPasswordMutation } from '../../services/apis/authApi';
@@ -16,12 +17,9 @@ import {
 const ForgotPassword = () => {
   const { LOGIN, VERIFY_OTP_PASSWORD } = PATHS.AUTH;
   const email = useRef('');
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [forgotPassword, { error, isError, isLoading, isSuccess, data }] =
     useForgotPasswordMutation();
-
-  const goToOtpPage = () => navigate(VERIFY_OTP_PASSWORD);
 
   useEffect(() => {
     dispatch(updateUser({ email: '' }));
@@ -48,9 +46,9 @@ const ForgotPassword = () => {
               to get the code
             </p>
           </div>
-          <Button variant='contained' onClick={goToOtpPage}>
+          <LinkButton to={VERIFY_OTP_PASSWORD} variant='contained'>
             Next
-          </Button>
+          </LinkButton>
         </div>
       ) : (
         <div className='right-aside'>

@@ -1,9 +1,7 @@
 import { Subject } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
 import {
   Paper,
   Table,
-  Button,
   TableRow,
   TableBody,
   TableCell,
@@ -14,7 +12,7 @@ import {
 
 import type { Column } from '../user-elections';
 import { PATHS } from '../../routes/PathConstants';
-import { UserElectionTab, Loading } from '../../components';
+import { UserElectionTab, Loading, LinkButton } from '../../components';
 import { useHandleReduxQueryError } from '../../hooks/useHandleReduxQuery';
 import {
   useGetUserElectionsQuery,
@@ -29,7 +27,6 @@ const Dashboard = () => {
     { id: 'endTime', label: 'Ends at', minWidth: 30 },
   ];
 
-  const navigate = useNavigate();
   const {
     data: getElectionsData,
     refetch: refetchElections,
@@ -44,8 +41,6 @@ const Dashboard = () => {
     isError: isGetVotedElectionsError,
     isLoading: isGetVotedElectionsLoading,
   } = useGetUserVotedElectionsQuery();
-
-  const goToElectionsPage = () => navigate(ELECTIONS.FETCH);
 
   useHandleReduxQueryError({
     error: getElectionsError,
@@ -110,13 +105,13 @@ const Dashboard = () => {
                 <TableFooter className='w-full'>
                   <TableRow>
                     <TableCell colSpan={5}>
-                      <Button
+                      <LinkButton
                         variant='contained'
-                        onClick={goToElectionsPage}
+                        to={ELECTIONS.FETCH}
                         className='!block !ml-auto w-30'
                       >
                         see more
-                      </Button>
+                      </LinkButton>
                     </TableCell>
                   </TableRow>
                 </TableFooter>

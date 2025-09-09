@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Tooltip, TableRow, TableCell, Button } from '@mui/material';
 
 import { showAlert } from '../../utils';
+import LinkButton from '../buttons/LinkButton';
 import { PATHS } from '../../routes/PathConstants';
 import { type Column } from '../../pages/elections';
 import { useAppSelector } from '../../hooks/useRootStorage';
@@ -26,10 +27,6 @@ const UserElectionTab: React.FC<Props> = ({ election, columns, hasVoted }) => {
 
     sessionStorage.setItem('election', JSON.stringify(election));
     navigate(PATHS.ELECTIONS.ELECTION.replace(':id', election._id));
-  };
-
-  const navigateElectionResultPage = () => {
-    navigate(PATHS.RESULTS.RESULT.replace(':id', election._id));
   };
 
   return (
@@ -87,15 +84,15 @@ const UserElectionTab: React.FC<Props> = ({ election, columns, hasVoted }) => {
           }
         >
           <span>
-            <Button
+            <LinkButton
               variant='outlined'
               aria-label='check result'
               className='cursor-pointer'
               disabled={!election.hasStarted}
-              onClick={navigateElectionResultPage}
+              to={PATHS.RESULTS.RESULT.replace(':id', election._id)}
             >
               Result
-            </Button>
+            </LinkButton>
           </span>
         </Tooltip>
       </TableCell>

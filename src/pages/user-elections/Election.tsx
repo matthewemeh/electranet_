@@ -5,11 +5,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { TbFaceId, TbFaceIdError } from 'react-icons/tb';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Avatar, Button, IconButton, Tooltip } from '@mui/material';
-import { nets, detectSingleFace, euclideanDistance, fetchImage } from 'face-api.js';
+import { detectSingleFace, euclideanDistance, fetchImage } from 'face-api.js';
 import { FaceRetouchingOff, HowToVote, InfoRounded, VideocamOff } from '@mui/icons-material';
 
-import { showAlert } from '../../utils';
 import { PATHS } from '../../routes/PathConstants';
+import { loadFaceModels, showAlert } from '../../utils';
 import { useAppSelector } from '../../hooks/useRootStorage';
 import { useLazyFetchFaceQuery } from '../../services/apis/faceApi';
 import { log, warn, error as errorLog } from '../../utils/log.utils';
@@ -334,17 +334,7 @@ const Election = () => {
     }
 
     fetchFaceID();
-
-    const loadModels = async () => {
-      const MODEL_URL = `${window.location.origin}/models`;
-      await Promise.all([
-        nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
-        nets.faceRecognitionNet.loadFromUri(MODEL_URL),
-        nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-      ]);
-      setModelsLoaded(true);
-    };
-    loadModels();
+    loadFaceModels(() => setModelsLoaded(true));
 
     // release webcam on component unmount
     return releaseWebcam;

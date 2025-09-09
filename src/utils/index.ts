@@ -1,3 +1,5 @@
+import { nets } from 'face-api.js';
+
 export const addClass = (element?: HTMLElement | null, ...classes: string[]) => {
   element?.classList.add(...classes);
 };
@@ -86,4 +88,13 @@ export const generateTimeSlots = (spacingMinutes: number): string[] => {
   }
 
   return slots;
+};
+
+export const loadFaceModels = async (onLoaded?: () => void) => {
+  const MODEL_URL = `${window.location.origin}/models`;
+  await Promise.all([
+    nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
+    nets.faceRecognitionNet.loadFromUri(MODEL_URL),
+    nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+  ]).then(onLoaded);
 };

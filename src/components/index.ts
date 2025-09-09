@@ -15,9 +15,11 @@ export { default as Loading } from './loading/Loading';
 export { default as LoadingPaper } from './loading/LoadingPaper';
 
 // buttons
+export { default as LinkButton } from './buttons/LinkButton';
 export { default as BackButton } from './buttons/BackButton';
 export { default as InfoButton } from './buttons/InfoButton';
 export { default as FilterButton } from './buttons/FilterButton';
+export { default as LinkIconButton } from './buttons/LinkIconButton';
 
 // inputs
 export { default as OtpInput } from './inputs/OtpInput';
