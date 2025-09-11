@@ -239,9 +239,11 @@ const Navbar = () => {
             avatar={<Avatar alt={lastName} src='' />}
           />
           <div className='content'>
-            <LinkButton to={FACE_ID_REGISTER} size='small'>
-              Face ID
-            </LinkButton>
+            {role === 'USER' && (
+              <LinkButton to={FACE_ID_REGISTER} size='small'>
+                Face ID
+              </LinkButton>
+            )}
             <Button size='small' onClick={handleLogout} disabled={isLoading}>
               Logout
             </Button>
