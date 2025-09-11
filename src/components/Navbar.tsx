@@ -78,7 +78,7 @@ const Navbar = () => {
     {
       text: 'Results',
       url: RESULTS.FETCH,
-      urlRegex: new RegExp(`^${RESULTS.RESULT}`),
+      urlRegex: new RegExp(`^${RESULTS.FETCH}`),
     },
     {
       text: 'Verify Vote',
