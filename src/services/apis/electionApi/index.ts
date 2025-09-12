@@ -15,13 +15,16 @@ const electionApi = createApi({
     getUserElections: builder.query<PaginatedResponse<Election>, GetUserElectionsPayload>({
       query: ({ params }) => ({ params, method: 'GET', url: ELECTIONS.USER_ELECTIONS }),
       providesTags: ['Elections'],
+      forceRefetch: () => true,
     }),
     getUserVotedElections: builder.query<VotedElectionsResponse, void>({
       query: () => ({ method: 'GET', url: ELECTIONS.USER_VOTED_ELECTIONS }),
+      forceRefetch: () => true,
     }),
     getElections: builder.query<PaginatedResponse<Election>, GetElectionsPayload>({
       query: ({ params }) => ({ params, method: 'GET', url: ELECTIONS.MAIN }),
       providesTags: ['Elections'],
+      forceRefetch: () => true,
     }),
     addElection: builder.mutation<PaginatedResponse<Election>, AddElectionPayload>({
       query: body => ({ body, method: 'POST', url: ELECTIONS.MAIN }),

@@ -14,6 +14,7 @@ const logApi = createApi({
   endpoints: builder => ({
     getLogs: builder.query<PaginatedResponse<Log>, GetLogsPayload>({
       query: ({ params }) => ({ params, method: 'GET', url: LOGS }),
+      forceRefetch: () => true,
       providesTags: ['Logs'],
     }),
   }),

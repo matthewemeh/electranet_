@@ -1,7 +1,7 @@
 import moment from 'moment';
-import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { InfoRounded } from '@mui/icons-material';
+import { useEffect, useMemo, useState } from 'react';
 import { Avatar, IconButton, Tooltip } from '@mui/material';
 
 import { useGetResultQuery } from '../../services/apis/resultApi';
@@ -10,6 +10,7 @@ import { useHandleReduxQueryError } from '../../hooks/useHandleReduxQuery';
 
 const Result = () => {
   const { id } = useParams();
+  const FIVE_MINUTES = 5 * 60 * 1000;
   const [contestantAlertOpen, setContestantAlertOpen] = useState(false);
   const [selectedContestant, setSelectedContestant] = useState<Contestant | null>(null);
 
@@ -31,6 +32,11 @@ const Result = () => {
     refetch: refetchResult,
     isError: isGetResultError,
   });
+
+  useEffect(() => {
+    const timer = setInterval(refetchResult, FIVE_MINUTES);
+    return () => clearInterval(timer);
+  }, []);
 
   const dialogContent: React.ReactNode = useMemo(() => {
     if (!selectedContestant) return <></>;

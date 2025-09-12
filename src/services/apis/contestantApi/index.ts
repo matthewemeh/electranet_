@@ -41,6 +41,7 @@ const contestantApi = createApi({
     getContestants: builder.query<PaginatedResponse<Contestant>, GetContestantsPayload>({
       query: ({ params }) => ({ params, method: 'GET', url: CONTESTANTS.FETCH }),
       providesTags: ['Contestants'],
+      forceRefetch: () => true,
     }),
     getElectionContestants: builder.query<GetElectionContestantsResponse, string>({
       query: electionID => ({
@@ -48,6 +49,7 @@ const contestantApi = createApi({
         url: CONTESTANTS.ELECTION.replace(':id', electionID),
       }),
       providesTags: ['Contestants'],
+      forceRefetch: () => true,
     }),
   }),
 });

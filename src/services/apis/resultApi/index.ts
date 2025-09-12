@@ -16,10 +16,12 @@ const ResultApi = createApi({
     getResults: builder.query<PaginatedResponse<ResultData>, GetResultsPayload>({
       query: ({ params }) => ({ params, method: 'GET', url: RESULTS.FETCH }),
       providesTags: ['Results'],
+      forceRefetch: () => true,
     }),
     getResult: builder.query<ResultResponse, string>({
       query: electionID => ({ method: 'GET', url: RESULTS.RESULT.replace(':id', electionID) }),
       providesTags: ['Result'],
+      forceRefetch: () => true,
     }),
   }),
 });

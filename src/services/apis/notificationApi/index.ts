@@ -14,6 +14,7 @@ const notificationApi = createApi({
   endpoints: builder => ({
     getNotifications: builder.query<PaginatedResponse<Notification_>, GetNotificationsPayload>({
       query: ({ params }) => ({ params, method: 'GET', url: NOTIFICATIONS }),
+      forceRefetch: () => true,
     }),
   }),
 });

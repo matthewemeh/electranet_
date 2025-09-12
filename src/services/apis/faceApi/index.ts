@@ -23,6 +23,7 @@ const faceIdApi = createApi({
     fetchFace: builder.query<FaceIdResponse, void>({
       keepUnusedDataFor: 300,
       query: () => ({ method: 'GET', url: FACE_ID.FETCH }),
+      forceRefetch: () => true,
     }),
   }),
 });

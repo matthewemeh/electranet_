@@ -34,6 +34,7 @@ const partyApi = createApi({
     getParties: builder.query<GetPartiesResponse, GetPartiesPayload>({
       query: ({ params }) => ({ params, method: 'GET', url: PARTIES.FETCH }),
       providesTags: ['Party'],
+      forceRefetch: () => true,
     }),
   }),
 });

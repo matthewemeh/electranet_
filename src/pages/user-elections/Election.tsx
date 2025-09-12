@@ -111,7 +111,7 @@ const Election = () => {
   const groupedContestants = useMemo(() => {
     if (!getContestantsData) return {};
 
-    return groupBy(getContestantsData.data, contestant => contestant.party?._id);
+    return groupBy(getContestantsData.data, ({ party }) => party?._id);
   }, [getContestantsData]);
 
   const isModalOpen = useMemo(
@@ -388,7 +388,7 @@ const Election = () => {
             </p>
 
             <div className='flex gap-5 flex-wrap'>
-              {contestants.map(contestant => (
+              {contestants.map(({ contestant, party }) => (
                 <div
                   key={contestant._id}
                   className='relative w-42.5 h-46 rounded p-4 flex flex-col gap-2 border border-[rgba(0,0,0,0.15)]'
@@ -403,7 +403,10 @@ const Election = () => {
                     className='!absolute !bottom-1 !right-1'
                     title='View detailed Contestant information'
                   >
-                    <IconButton className='!w-4 !h-4' onClick={() => handleInfoClick(contestant)}>
+                    <IconButton
+                      className='!w-4 !h-4'
+                      onClick={() => handleInfoClick({ ...contestant, party })}
+                    >
                       <InfoRounded className='!w-[inherit] !h-[inherit] text-primary-500' />
                     </IconButton>
                   </Tooltip>
@@ -452,11 +455,13 @@ const Election = () => {
                 &nbsp;for&nbsp;<span className='font-bold'>{electionToVote.name}</span> ?
               </p>
               <ul className='list-disc list-inside'>
-                {groupedContestants[selectedParty._id].map(({ _id, firstName, lastName }) => (
-                  <li key={_id}>
-                    {firstName} {lastName}
-                  </li>
-                ))}
+                {groupedContestants[selectedParty._id].map(
+                  ({ contestant: { _id, firstName, lastName } }) => (
+                    <li key={_id}>
+                      {firstName} {lastName}
+                    </li>
+                  )
+                )}
               </ul>
             </div>
           )

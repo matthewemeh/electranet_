@@ -22,6 +22,7 @@ const voteApi = createApi({
     }),
     getVotes: builder.query<PaginatedResponse<Vote>, GetVotesPayload>({
       query: ({ id, params }) => ({ params, method: 'GET', url: VOTES.FETCH.replace(':id', id) }),
+      forceRefetch: () => true,
     }),
   }),
 });
