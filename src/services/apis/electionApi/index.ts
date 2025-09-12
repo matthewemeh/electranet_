@@ -3,14 +3,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import Endpoints from '../../Endpoints';
 import { baseQuery } from '../../../config/reduxjs.config';
 
-const {
-  ELECTION,
-  ELECTIONS,
-  GET_USER_ELECTIONS,
-  ADD_ELECTION_CONTESTANT,
-  GET_USER_VOTED_ELECTIONS,
-  REMOVE_ELECTION_CONTESTANT,
-} = Endpoints;
+const { ELECTIONS } = Endpoints;
 
 // create the createApi
 const electionApi = createApi({
@@ -20,33 +13,40 @@ const electionApi = createApi({
   tagTypes: ['Elections', 'Contestants'],
   endpoints: builder => ({
     getUserElections: builder.query<PaginatedResponse<Election>, GetUserElectionsPayload>({
-      query: ({ params }) => ({ params, method: 'GET', url: GET_USER_ELECTIONS }),
+      query: ({ params }) => ({ params, method: 'GET', url: ELECTIONS.USER_ELECTIONS }),
       providesTags: ['Elections'],
     }),
     getUserVotedElections: builder.query<VotedElectionsResponse, void>({
-      query: () => ({ method: 'GET', url: GET_USER_VOTED_ELECTIONS }),
+      query: () => ({ method: 'GET', url: ELECTIONS.USER_VOTED_ELECTIONS }),
     }),
     getElections: builder.query<PaginatedResponse<Election>, GetElectionsPayload>({
-      query: ({ params }) => ({ params, method: 'GET', url: ELECTIONS }),
+      query: ({ params }) => ({ params, method: 'GET', url: ELECTIONS.MAIN }),
       providesTags: ['Elections'],
     }),
     addElection: builder.mutation<PaginatedResponse<Election>, AddElectionPayload>({
-      query: body => ({ body, method: 'POST', url: ELECTIONS }),
+      query: body => ({ body, method: 'POST', url: ELECTIONS.MAIN }),
       invalidatesTags: ['Elections'],
     }),
     updateElection: builder.mutation<NullResponse, UpdateElectionPayload>({
-      query: ({ id, ...body }) => ({ body, method: 'PATCH', url: ELECTION.replace(':id', id) }),
+      query: ({ id, ...body }) => ({
+        body,
+        method: 'PATCH',
+        url: ELECTIONS.ELECTION.replace(':id', id),
+      }),
       invalidatesTags: ['Elections'],
     }),
     deleteElection: builder.mutation<NullResponse, string>({
-      query: electionID => ({ method: 'DELETE', url: ELECTION.replace(':id', electionID) }),
+      query: electionID => ({
+        method: 'DELETE',
+        url: ELECTIONS.ELECTION.replace(':id', electionID),
+      }),
       invalidatesTags: ['Elections'],
     }),
     addElectionContestant: builder.mutation<NullResponse, ElectionContestantPayload>({
       query: ({ electionID, ...body }) => ({
         body,
         method: 'PATCH',
-        url: ADD_ELECTION_CONTESTANT.replace(':id', electionID),
+        url: ELECTIONS.ADD_CONTESTANT.replace(':id', electionID),
       }),
       invalidatesTags: ['Contestants'],
     }),
@@ -54,7 +54,7 @@ const electionApi = createApi({
       query: ({ electionID, ...body }) => ({
         body,
         method: 'PATCH',
-        url: REMOVE_ELECTION_CONTESTANT.replace(':id', electionID),
+        url: ELECTIONS.REMOVE_CONTESTANT.replace(':id', electionID),
       }),
       invalidatesTags: ['Contestants'],
     }),

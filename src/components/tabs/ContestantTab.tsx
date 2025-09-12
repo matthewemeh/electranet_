@@ -1,134 +1,50 @@
-import { useMemo, useState } from 'react';
 import { FaCircleInfo } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
+import { DeleteOutline, DriveFileRenameOutline } from '@mui/icons-material';
 import { Avatar, Tooltip, TableRow, TableCell, IconButton } from '@mui/material';
-import {
-  PersonAdd,
-  PersonRemove,
-  DeleteOutline,
-  SettingsBackupRestore,
-  DriveFileRenameOutline,
-} from '@mui/icons-material';
 
 import { PATHS } from '../../routes/PathConstants';
 import { type Column } from '../../pages/contestants';
-import { useUpdateContestantMutation } from '../../services/apis/contestantApi';
-import {
-  useAddElectionContestantMutation,
-  useRemoveElectionContestantMutation,
-} from '../../services/apis/electionApi';
+import { useDeleteContestantMutation } from '../../services/apis/contestantApi';
 import {
   useHandleReduxQueryError,
   useHandleReduxQuerySuccess,
 } from '../../hooks/useHandleReduxQuery';
 
 interface Props {
-  isAdded?: boolean;
   contestant: Contestant;
   columns: readonly Column[];
-  isElectionContestant?: boolean;
   onInfoClick?: (contestant: Contestant) => void;
 }
 
-const ContestantTab: React.FC<Props> = ({
-  columns,
-  isAdded,
-  contestant,
-  onInfoClick,
-  isElectionContestant,
-}) => {
+const ContestantTab: React.FC<Props> = ({ columns, contestant, onInfoClick }) => {
   const navigate = useNavigate();
-  const [isContestantAdded, setIsContestantAdded] = useState(isAdded);
-  const election: Election = useMemo(
-    () => JSON.parse(sessionStorage.getItem('election') ?? '{}'),
-    []
-  );
 
   const [
-    updateContestant,
+    deleteContestant,
     {
-      data: updateData,
-      error: updateError,
-      isError: isUpdateError,
-      isLoading: isUpdateLoading,
-      isSuccess: isUpdateSuccess,
-      originalArgs: updateOriginalArgs,
+      data: deleteData,
+      error: deleteError,
+      isError: isDeleteError,
+      isLoading: isDeleteLoading,
+      isSuccess: isDeleteSuccess,
+      originalArgs: deleteOriginalArgs,
     },
-  ] = useUpdateContestantMutation();
-
-  const [
-    addElectionContestant,
-    {
-      data: addData,
-      error: addError,
-      isError: isAddError,
-      isLoading: isAddLoading,
-      isSuccess: isAddSuccess,
-      originalArgs: addOriginalArgs,
-    },
-  ] = useAddElectionContestantMutation();
-
-  const [
-    removeElectionContestant,
-    {
-      data: removeData,
-      error: removeError,
-      isError: isRemoveError,
-      isLoading: isRemoveLoading,
-      isSuccess: isRemoveSuccess,
-      originalArgs: removeOriginalArgs,
-    },
-  ] = useRemoveElectionContestantMutation();
+  ] = useDeleteContestantMutation();
 
   const navigateEditPage = () => {
     localStorage.setItem('contestantToUpdate', JSON.stringify(contestant));
     navigate(PATHS.CONTESTANTS.EDIT);
   };
 
-  const handleDelete = () => updateContestant({ id: contestant._id, isDeleted: true });
+  const handleDelete = () => deleteContestant(contestant._id);
 
-  const handleRestore = () => updateContestant({ id: contestant._id, isDeleted: false });
-
-  const handleRemoveContestant = () => {
-    removeElectionContestant({ contestantID: contestant._id, electionID: election._id });
-  };
-
-  const handleAddContestant = () => {
-    addElectionContestant({ contestantID: contestant._id, electionID: election._id });
-  };
-
-  useHandleReduxQuerySuccess({ response: updateData, isSuccess: isUpdateSuccess });
+  useHandleReduxQuerySuccess({ response: deleteData, isSuccess: isDeleteSuccess });
   useHandleReduxQueryError({
-    error: updateError,
-    isError: isUpdateError,
+    error: deleteError,
+    isError: isDeleteError,
     refetch: () => {
-      if (updateOriginalArgs) updateContestant(updateOriginalArgs);
-    },
-  });
-
-  useHandleReduxQuerySuccess({
-    response: addData,
-    isSuccess: isAddSuccess,
-    onSuccess: () => setIsContestantAdded(true),
-  });
-  useHandleReduxQueryError({
-    error: addError,
-    isError: isAddError,
-    refetch: () => {
-      if (addOriginalArgs) addElectionContestant(addOriginalArgs);
-    },
-  });
-
-  useHandleReduxQuerySuccess({
-    response: removeData,
-    isSuccess: isRemoveSuccess,
-    onSuccess: () => setIsContestantAdded(false),
-  });
-  useHandleReduxQueryError({
-    error: removeError,
-    isError: isRemoveError,
-    refetch: () => {
-      if (removeOriginalArgs) removeElectionContestant(removeOriginalArgs);
+      if (deleteOriginalArgs) deleteContestant(deleteOriginalArgs);
     },
   });
 
@@ -164,94 +80,42 @@ const ContestantTab: React.FC<Props> = ({
           </TableCell>
         );
       })}
-      {isElectionContestant ? (
-        isContestantAdded ? (
-          <TableCell role='cell' style={{ minWidth: 10 }}>
-            <Tooltip
-              title={
-                election.hasStarted
-                  ? 'Cannot remove contestant from commenced election'
-                  : `${isRemoveLoading ? 'Removing' : 'Remove'} Contestant from ${election.name}`
-              }
-            >
-              <span>
-                <IconButton
-                  aria-label='remove'
-                  onClick={handleRemoveContestant}
-                  disabled={election.hasStarted || isRemoveLoading}
-                >
-                  <PersonRemove />
-                </IconButton>
-              </span>
-            </Tooltip>
-          </TableCell>
-        ) : (
-          <TableCell role='cell' style={{ minWidth: 10 }}>
-            <Tooltip
-              title={
-                contestant.party
-                  ? election.hasStarted
-                    ? 'Cannot add contestant to commenced election'
-                    : `${isAddLoading ? 'Adding' : 'Add'} Contestant to ${election.name}`
-                  : 'Assign Contestant to a party before adding to Election'
-              }
-            >
-              <span>
-                <IconButton
-                  aria-label='add'
-                  onClick={handleAddContestant}
-                  disabled={!contestant.party || election.hasStarted || isAddLoading}
-                >
-                  <PersonAdd />
-                </IconButton>
-              </span>
-            </Tooltip>
-          </TableCell>
-        )
-      ) : (
-        <>
-          <TableCell role='cell' style={{ minWidth: 10 }}>
-            <Tooltip title='Edit Contestant details'>
-              <IconButton aria-label='edit' className='cursor-pointer' onClick={navigateEditPage}>
-                <DriveFileRenameOutline />
-              </IconButton>
-            </Tooltip>
-          </TableCell>
 
-          <TableCell role='cell' style={{ minWidth: 10 }}>
-            <Tooltip
-              title={
-                contestant.isDeleted
-                  ? isUpdateLoading
-                    ? 'Restoring Contestant'
-                    : 'Restore Contestant'
-                  : isUpdateLoading
-                  ? 'Deleting Contestant'
-                  : 'Delete Contestant'
-              }
-            >
-              <span>
-                <IconButton
-                  aria-label='delete'
-                  disabled={isUpdateLoading}
-                  onClick={contestant.isDeleted ? handleRestore : handleDelete}
-                >
-                  {contestant.isDeleted ? <SettingsBackupRestore /> : <DeleteOutline />}
-                </IconButton>
-              </span>
-            </Tooltip>
-          </TableCell>
+      <TableCell role='cell' style={{ minWidth: 10 }}>
+        <Tooltip title='Edit Contestant details'>
+          <IconButton aria-label='edit' className='cursor-pointer' onClick={navigateEditPage}>
+            <DriveFileRenameOutline />
+          </IconButton>
+        </Tooltip>
+      </TableCell>
 
-          <TableCell role='cell' style={{ minWidth: 10 }}>
-            <Tooltip className='cursor-pointer' title='View Full Contestant details'>
-              <FaCircleInfo
-                className='text-primary-500'
-                onClick={() => onInfoClick?.(contestant)}
-              />
-            </Tooltip>
-          </TableCell>
-        </>
-      )}
+      <TableCell role='cell' style={{ minWidth: 10 }}>
+        <Tooltip
+          title={
+            isDeleteSuccess
+              ? 'Deleted Contestant'
+              : isDeleteLoading
+              ? 'Deleting Contestant'
+              : 'Delete Contestant'
+          }
+        >
+          <span>
+            <IconButton
+              aria-label='delete'
+              onClick={handleDelete}
+              disabled={isDeleteLoading || isDeleteSuccess}
+            >
+              <DeleteOutline />
+            </IconButton>
+          </span>
+        </Tooltip>
+      </TableCell>
+
+      <TableCell role='cell' style={{ minWidth: 10 }}>
+        <Tooltip className='cursor-pointer' title='View Full Contestant details'>
+          <FaCircleInfo className='text-primary-500' onClick={() => onInfoClick?.(contestant)} />
+        </Tooltip>
+      </TableCell>
     </TableRow>
   );
 };

@@ -101,10 +101,14 @@ interface Contestant {
   firstName: string;
   updatedAt?: string;
   createdAt?: string;
-  isDeleted?: boolean;
   middleName?: string;
   stateOfOrigin: string;
   profileImageUrl: string;
+}
+
+interface ElectionContestant {
+  party: Party;
+  contestant: Contestant;
 }
 
 interface Result extends Omit<MongoProps, '__v'> {

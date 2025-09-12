@@ -85,5 +85,5 @@ interface GetPartiesResponse extends BaseResponse {
 }
 
 interface GetElectionContestantsResponse extends BaseResponse {
-  data: Contestant[];
+  data: ElectionContestant[];
 }

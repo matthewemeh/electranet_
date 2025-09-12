@@ -28,8 +28,8 @@ import {
   InfoButton,
   LoadingPaper,
   FilterButton,
-  ContestantTab,
   ContestantFilters,
+  ElectionContestantTab,
   TablePaginationActions,
 } from '../../components';
 
@@ -243,17 +243,22 @@ const Contestants = () => {
 
             <TableBody>
               {getElectionContestantsData &&
-                getContestantsData.data.docs.map(contestant => (
-                  <ContestantTab
-                    columns={columns}
-                    key={contestant._id}
-                    isElectionContestant
-                    contestant={contestant}
-                    isAdded={getElectionContestantsData.data.some(
-                      ({ _id }) => _id === contestant._id
-                    )}
-                  />
-                ))}
+                getContestantsData.data.docs.map(contestant => {
+                  const electionContestant = getElectionContestantsData.data.find(
+                    ({ contestant: c }) => c._id === contestant._id
+                  );
+                  const party = electionContestant ? electionContestant.party : contestant.party;
+
+                  return (
+                    <ElectionContestantTab
+                      party={party}
+                      columns={columns}
+                      key={contestant._id}
+                      contestant={contestant}
+                      isAdded={!!electionContestant}
+                    />
+                  );
+                })}
             </TableBody>
           </Table>
         </TableContainer>

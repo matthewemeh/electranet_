@@ -1,7 +1,7 @@
 import { isEmpty } from 'lodash';
+import { Add, Refresh } from '@mui/icons-material';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Add, Refresh, VisibilityOff } from '@mui/icons-material';
 import { IoIosArrowRoundUp, IoIosArrowRoundDown } from 'react-icons/io';
 import {
   Fab,
@@ -106,8 +106,7 @@ const Contestants = () => {
   const dialogContent: React.ReactNode = useMemo(() => {
     if (!selectedContestant) return <></>;
 
-    const { gender, lastName, firstName, middleName, isDeleted, party, stateOfOrigin } =
-      selectedContestant;
+    const { gender, lastName, firstName, middleName, party, stateOfOrigin } = selectedContestant;
 
     return (
       <div className='grid grid-cols-[40%_60%] gap-2'>
@@ -133,13 +132,6 @@ const Contestants = () => {
 
         <p className='card-info__tag'>State of Origin</p>
         <p className='card-info__text capitalize'>{stateOfOrigin || 'Unavailable'}</p>
-
-        {isDeleted && (
-          <p className='card-info__tag flex gap-2 col-start-1 col-end-3'>
-            <VisibilityOff />
-            Currently not visible to voters
-          </p>
-        )}
       </div>
     );
   }, [selectedContestant]);

@@ -48,6 +48,7 @@ export { default as ElectionTab } from './tabs/ElectionTab';
 export { default as ContestantTab } from './tabs/ContestantTab';
 export { default as UserElectionTab } from './tabs/UserElectionTab';
 export { default as NotificationTab } from './tabs/NotificationTab';
+export { default as ElectionContestantTab } from './tabs/ElectionContestantTab';
 
 // filters
 export { default as LogFilters } from './filters/LogFilters';
