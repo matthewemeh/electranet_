@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Checkbox, FormControlLabel, Paper, TablePagination } from '@mui/material';
+import { Paper, TablePagination } from '@mui/material';
 
 import { useGetVotesQuery } from '../../services/apis/voteApi';
 import { useHandleReduxQueryError } from '../../hooks/useHandleReduxQuery';
@@ -18,7 +18,6 @@ const Votes = () => {
   const [page, setPage] = useState(1);
   const [alertOpen, setAlertOpen] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [isDescending, setIsDescending] = useState(false);
   const [voteData, setVoteData] = useState<VerifyVoteResponse['data']>();
 
   const handlePageChange = (_: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
@@ -44,7 +43,6 @@ const Votes = () => {
     params: {
       page,
       limit: rowsPerPage,
-      sortBy: JSON.stringify({ timestamp: isDescending ? -1 : 1 }),
     },
   });
 
@@ -108,14 +106,6 @@ const Votes = () => {
           <VoteBubble key={vote._id} vote={vote} onVerifySuccess={handleVerifySuccess} />
         ))}
       </section>
-
-      <FormControlLabel
-        label='Descending Vote Order'
-        className='!absolute left-5 !bottom-3.5 z-100 max-[700px]:bottom-0.5'
-        control={
-          <Checkbox checked={isDescending} onChange={e => setIsDescending(e.target.checked)} />
-        }
-      />
 
       <TablePagination
         component='div'

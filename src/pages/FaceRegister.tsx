@@ -7,17 +7,19 @@ import { TbFaceId, TbFaceIdError } from 'react-icons/tb';
 
 import { PATHS } from '../routes/PathConstants';
 import { Modal, OtpInput } from '../components';
-import { showAlert, loadFaceModels, secondsToMMSS } from '../utils';
-import { useAppSelector } from '../hooks/useRootStorage';
+import { updateUser } from '../services/apis/authApi/store';
 import { useLazySendOtpQuery } from '../services/apis/authApi';
 import { log, warn, error as errorLog } from '../utils/log.utils';
 import { useRegisterFaceMutation } from '../services/apis/faceApi';
+import { showAlert, loadFaceModels, secondsToMMSS } from '../utils';
+import { useAppDispatch, useAppSelector } from '../hooks/useRootStorage';
 import { useHandleReduxQueryError, useHandleReduxQuerySuccess } from '../hooks/useHandleReduxQuery';
 
 const FaceRegister = () => {
   const navigate = useNavigate();
 
   const THREE_MINUTES = 3 * 60;
+  const dispatch = useAppDispatch();
   const [otp, setOtp] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modelsLoaded, setModelsLoaded] = useState(false);
@@ -165,7 +167,10 @@ const FaceRegister = () => {
   useHandleReduxQuerySuccess({
     response: registerData,
     isSuccess: isRegisterSuccess,
-    onSuccess: () => navigate(PATHS.DASHBOARD),
+    onSuccess: () => {
+      dispatch(updateUser({ faceID: true }));
+      navigate(PATHS.DASHBOARD);
+    },
   });
   useHandleReduxQueryError({
     error: registerError,
