@@ -33,7 +33,9 @@ const VoteBubble: React.FC<Props> = ({ vote, onVerifySuccess }) => {
   return (
     <div
       className={`group relative cursor-pointer w-20 h-20 rounded-full text-white text-4xl font-bold flex items-center justify-center after:absolute after:bg-linear-180 after:from-primary-400 after:to-primary-600 after:w-1 after:h-14 after:top-[calc(100%+4px)] after:left-1/2 after:-translate-x-1/2 last:after:hidden ${
-        vote.isInvalid ? 'bg-red-600' : 'bg-linear-120 from-primary-400 to-primary-600'
+        vote.isInvalid || data?.data.status === 'failed'
+          ? 'bg-red-600'
+          : 'bg-linear-120 from-primary-400 to-primary-600'
       }`}
     >
       <span
@@ -54,8 +56,8 @@ const VoteBubble: React.FC<Props> = ({ vote, onVerifySuccess }) => {
           className='!mt-4'
           variant='outlined'
           loading={isLoading}
-          disabled={vote.isInvalid}
           onClick={handleVerifyVote}
+          disabled={vote.isInvalid || data?.data.status === 'failed'}
         >
           Verify
         </Button>

@@ -57,7 +57,7 @@ const Register = () => {
   const navigateDetailsSection = () => setStage(Stage.BASIC_INFO);
 
   const navigatePasswordSection = () => {
-    stageProps.current[2].subtitle = (
+    stageProps.current[3].subtitle = (
       <>
         Please enter the one-time password (OTP) sent to&nbsp;
         <span className='font-bold text-primary-700'>{registerPayload.current.email}</span>
