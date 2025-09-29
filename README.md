@@ -12,7 +12,7 @@ This is to certify that this project was carried out by [EMEH MATTHEW CHUKWUEMEK
 
 ## Overview
 
-A modern web application built with **React**, **TypeScript**, and **Vite**. This project provides a robust foundation for scalable, maintainable, and high-performance frontend development, featuring hot module replacement, strict linting, and a modular architecture.
+A modern web application built with **React**, **TypeScript**, and **Vite**. This project provides a robust foundation for scalable, maintainable, and high-performance frontend development, featuring hot module replacement, strict linting, and a modular architecture. It is deployed at: [https://electranet.vercel.app](https://electranet.vercel.app)
 
 ---
 
