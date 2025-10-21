@@ -8,6 +8,8 @@ export const baseQuery = fetchBaseQuery({
   timeout: 30_000,
   baseUrl: BASE_URL,
   prepareHeaders: headers => {
+    headers.append('x-api-key', import.meta.env.VITE_API_KEY);
+
     const auth = localStorage.getItem('auth');
     if (!auth) return headers;
 
